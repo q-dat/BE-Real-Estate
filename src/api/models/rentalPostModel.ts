@@ -119,7 +119,7 @@ const RentalPostSchema: Schema = new Schema(
     expiredAt: { type: Date },
     adminNote: { type: String }
   },
-  { timestamps: true, collection: 'rental-post' }
+  { timestamps: true, collection: 'rental-posts' }
 )
 const RentalPostModel = mongoose.model<IRentalPost>('RentalPostModel', RentalPostSchema)
 export default RentalPostModel

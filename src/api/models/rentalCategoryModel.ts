@@ -16,7 +16,7 @@ const RentalCategorySchema: Schema = new Schema(
     name: { type: String, required: true },
     description: { type: String }
   },
-  { timestamps: true, collection: 'rental-category' }
+  { timestamps: true, collection: 'rental-categories' }
 )
 const RentalCategoryModel = mongoose.model<IRentalCategory>('RentalCategoryModel', RentalCategorySchema)
 export default RentalCategoryModel

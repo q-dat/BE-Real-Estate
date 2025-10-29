@@ -13,6 +13,7 @@ import { errorHandler } from './middlewares/errorMiddleware'
 
 // Routes
 // import authRoutes from './api/routes/auth/authRoutes'
+import rentalPostRoutes from './api/routes/rentalPostRoutes'
 
 // Environment setup
 dotenv.config()
@@ -65,7 +66,7 @@ app.options('*', cors())
 // app.use(sessionHeaderMiddleware)
 // ----------------------------------------------------------------
 // API routes
-// app.use('/api/', authRoutes)
+app.use('/api/', rentalPostRoutes)
 
 // EJS setup
 app.set('view engine', 'ejs')
