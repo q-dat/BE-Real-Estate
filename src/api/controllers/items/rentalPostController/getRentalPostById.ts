@@ -12,11 +12,11 @@ export const getRentalPostById = async (req: Request, res: Response): Promise<vo
       .lean()
 
     if (!rentalPost) {
-      res.status(404).json({ message: 'Bài đăng cho thuê không tồn tại!' })
+      res.status(404).json({ message: 'Bài đăng không tồn tại!' })
       return
     }
 
-    const response = { message: 'Lấy bài đăng cho thuê theo id thành công!', rentalPost }
+    const response = { message: 'Lấy bài đăng theo id thành công!', rentalPost }
     // await redis.setex(cacheKey, 3600, JSON.stringify(response))
     res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=7200')
     res.status(200).json(response)

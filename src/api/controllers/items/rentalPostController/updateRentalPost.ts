@@ -73,7 +73,7 @@ export const updateRentalPost = async (req: Request, res: Response): Promise<voi
     const updatedPost = await RentalPostModel.findByIdAndUpdate(req.params.id, updateData, { new: true })
 
     if (!updatedPost) {
-      res.status(404).json({ message: 'Bài đăng không tồn tại!' })
+      res.status(404).json({ message: 'Bài đăng không tồn tại!'})
       return
     }
 

@@ -69,11 +69,11 @@ export const createRentalPost = async (req: Request, res: Response): Promise<voi
       adminNote
     })
 
-    await newRentalPost.save()
+   const savedRentalPost = await newRentalPost.save()
 
     res.status(201).json({
-      message: 'Tạo bài đăng cho thuê thành công!',
-      data: newRentalPost
+      message: 'Tạo bài đăng bài đăng thành công!',
+      data: savedRentalPost
     })
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })

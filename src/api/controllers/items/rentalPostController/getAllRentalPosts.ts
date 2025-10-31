@@ -23,7 +23,7 @@ export const getAllRentalPosts = async (req: Request, res: Response): Promise<vo
       filterQuery.name = { $regex: name, $options: 'i' }
     }
 
-    // Lấy tất cả bài đăng cho thuê theo filter
+    // Lấy tất cả bài đăng bài đăng theo filter
     const rentalPosts = await RentalPostModel.find(filterQuery)
       .populate({
         path: 'category',
@@ -34,7 +34,7 @@ export const getAllRentalPosts = async (req: Request, res: Response): Promise<vo
     const count = await RentalCategoryModel.countDocuments()
 
     const response = {
-      message: 'Lấy danh sách bài đăng cho thuê thành công!',
+      message: 'Lấy danh sách bài đăng bài đăng thành công!',
       count,
       visibleCount: rentalPosts.length,
       rentalPosts: rentalPosts
