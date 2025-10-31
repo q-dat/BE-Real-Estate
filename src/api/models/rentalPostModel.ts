@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { IRentalAuthor } from './rentalAuthorModel'
 import { IRentalCategory } from './rentalCategoryModel'
+import { IRentalPriceUnit } from './RentalPriceUnitModel'
 
 /**
  * RentalPost - Bài đăng cho thuê / tìm người ở ghép / nhà, mặt bằng
@@ -16,7 +17,7 @@ export interface IRentalPost extends Document {
   category: IRentalCategory // danh mục (liên kết đến bảng danh mục)
 
   price: number // giá cho thuê (VNĐ)
-  priceUnit: string // đơn vị giá (vd: "VNĐ/tháng")
+  priceUnit: IRentalPriceUnit // đơn vị giá (vd: "VNĐ/tháng")
   area: number // diện tích (m2)
 
   province: string // tỉnh/thành phố
