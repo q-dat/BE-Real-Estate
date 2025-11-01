@@ -26,7 +26,6 @@ export interface IRentalPostAdmin extends Document {
   videoTitle?: string // tiêu đề video minh họa
   videoDescription?: string // mô tả ngắn cho video
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
-  /** -------------------- THÔNG TIN NGƯỜI ĐĂNG -------------------- */
   author?: string // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
   createdAt: string // ngày tạo tin
