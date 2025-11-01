@@ -5,8 +5,6 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 export const createRentalPostAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
-      code,
-      images,
       phoneNumbers,
       zaloLink,
       title,
@@ -30,18 +28,18 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     } = req.body
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
-    const imagesFiles = files?.['images'] || []
+    const imageFiles = files?.['images'] || []
 
-    if (!imagesFiles || imagesFiles.length === 0) {
+    if (!imageFiles.length) {
       res.status(400).json({ message: 'Hình ảnh là bắt buộc.' })
       return
     }
 
-    const imageUrls = await Promise.all(imagesFiles.map((file) => uploadImageToCloudinary(file.path)))
+    const imageUrls = await Promise.all(imageFiles.map((f) => uploadImageToCloudinary(f.path)))
 
-    const newRentalPost = new RentalPostAdminModel({
-      code,
-      images,
+    // Tạo document trước để có _id
+    const tempPost = new RentalPostAdminModel({
+      images: imageUrls,
       phoneNumbers,
       zaloLink,
       title,
@@ -64,11 +62,14 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       adminNote
     })
 
-    const savedRentalPost = await newRentalPost.save()
+    // Sinh code từ 7 ký tự cuối của _id
+    tempPost.code = 'POST-' + tempPost._id.toString().slice(-7).toUpperCase()
+
+    const saved = await tempPost.save()
 
     res.status(201).json({
-      message: 'Tạo bài đăng bài đăng thành công!',
-      data: savedRentalPost
+      message: 'Tạo bài đăng thành công!',
+      data: saved
     })
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })

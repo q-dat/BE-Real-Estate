@@ -72,7 +72,7 @@ export const createRentalPost = async (req: Request, res: Response): Promise<voi
    const savedRentalPost = await newRentalPost.save()
 
     res.status(201).json({
-      message: 'Tạo bài đăng bài đăng thành công!',
+      message: 'Tạo bài đăng thành công!',
       data: savedRentalPost
     })
   } catch (error: any) {
