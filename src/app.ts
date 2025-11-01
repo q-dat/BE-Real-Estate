@@ -15,6 +15,7 @@ import { errorHandler } from './middlewares/errorMiddleware'
 // import authRoutes from './api/routes/auth/authRoutes'
 import rentalPostRoutes from './api/routes/rentalPostRoutes'
 import rentalCategoryRoutes from './api/routes/rentalCategoryRoutes'
+import rentalPostAdminRoutes from './api/routes/rentalPostRoutesAdmin'
 
 // Environment setup
 dotenv.config()
@@ -68,6 +69,7 @@ app.options('*', cors())
 // ----------------------------------------------------------------
 // API routes
 app.use('/api/', rentalPostRoutes)
+app.use('/api/', rentalPostAdminRoutes)
 app.use('/api/', rentalCategoryRoutes)
 
 // EJS setup

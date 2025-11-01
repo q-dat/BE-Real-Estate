@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
-import RentalPostModel from '../../../models/rentalPostModel'
+import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
 
-// GET
-export const getAllRentalPosts = async (req: Request, res: Response): Promise<void> => {
+export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     // if (isBrowserRequest(req)) {
     //   res.send('')
@@ -23,14 +22,14 @@ export const getAllRentalPosts = async (req: Request, res: Response): Promise<vo
     }
 
     // Lấy tất cả bài đăng bài đăng theo filter
-    const rentalPosts = await RentalPostModel.find(filterQuery)
+    const rentalPosts = await RentalPostAdminModel.find(filterQuery)
       .populate({
         path: 'category',
         select: '-createdAt -updatedAt -__v'
       })
       .lean()
 
-    const count = await RentalPostModel.countDocuments()
+    const count = await RentalPostAdminModel.countDocuments()
 
     const response = {
       message: 'Lấy danh sách bài đăng bài đăng thành công!',
