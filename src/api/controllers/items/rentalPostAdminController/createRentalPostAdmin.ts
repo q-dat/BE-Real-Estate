@@ -63,7 +63,7 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     })
 
     // Sinh code từ 7 ký tự cuối của _id
-    tempPost.code = 'POST-' + tempPost._id.toString().slice(-7).toUpperCase()
+    tempPost.code = tempPost._id.toString().slice(-7).toUpperCase()
 
     const saved = await tempPost.save()
 
