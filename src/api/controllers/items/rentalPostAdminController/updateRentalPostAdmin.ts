@@ -7,6 +7,8 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
     const {
       code,
       images,
+      phoneNumbers,
+      zaloLink,
       title,
       description,
       category,
@@ -35,6 +37,8 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
     const updateData: Record<string, any> = {
       code,
       images,
+      phoneNumbers,
+      zaloLink,
       title,
       description,
       category,

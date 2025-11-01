@@ -7,6 +7,8 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     const {
       code,
       images,
+      phoneNumbers,
+      zaloLink,
       title,
       description,
       category,
@@ -40,6 +42,8 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     const newRentalPost = new RentalPostAdminModel({
       code,
       images,
+      phoneNumbers,
+      zaloLink,
       title,
       description,
       category,

@@ -8,6 +8,8 @@ export interface IRentalPostAdmin extends Document {
   _id: string // id bài đăng (ObjectId)
   code: string // mã bài đăng ngắn (vd: "POST-17234")
   images: string[] // danh sách ảnh
+  phoneNumbers?: string // danh sách số điện thoại liên hệ
+  zaloLink?: string // link Zalo liên hệ
   title: string // tiêu đề bài đăng
   description: string // mô tả chi tiết nội dung bài đăng
   category: IRentalCategory // danh mục (liên kết đến bảng danh mục)
@@ -25,7 +27,7 @@ export interface IRentalPostAdmin extends Document {
   videoDescription?: string // mô tả ngắn cho video
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
   /** -------------------- THÔNG TIN NGƯỜI ĐĂNG -------------------- */
-  author: string // người đăng tin
+  author?: string // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
   createdAt: string // ngày tạo tin
   updatedAt: string // ngày cập nhật gần nhất
@@ -35,6 +37,8 @@ const RentalPostSchema: Schema = new Schema(
   {
     code: { type: String, required: true, unique: true, trim: true },
     images: { type: [String], default: [] },
+    phoneNumbers: { type: String },
+    zaloLink: { type: String },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     category: { type: Schema.Types.ObjectId, ref: 'RentalCategoryModel', required: true },
