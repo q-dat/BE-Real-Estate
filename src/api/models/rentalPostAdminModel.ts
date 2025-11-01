@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import { IRentalAuthor } from './rentalAuthorModel'
 import { IRentalCategory } from './rentalCategoryModel'
 
 /**
@@ -26,7 +25,7 @@ export interface IRentalPostAdmin extends Document {
   videoDescription?: string // mô tả ngắn cho video
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
   /** -------------------- THÔNG TIN NGƯỜI ĐĂNG -------------------- */
-  author: IRentalAuthor // người đăng tin
+  author: string // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
   createdAt: string // ngày tạo tin
   updatedAt: string // ngày cập nhật gần nhất
