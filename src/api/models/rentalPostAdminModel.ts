@@ -75,7 +75,7 @@ const RentalPostSchema: Schema = new Schema(
     },
     author: { type: String, default: 'admin' },
     adminNote: { type: String },
-    postedAt: { type: Date },
+    postedAt: { type: Date, default: Date.now },
     expiredAt: { type: Date }
   },
   { timestamps: true, collection: 'rental-posts-admin' }
