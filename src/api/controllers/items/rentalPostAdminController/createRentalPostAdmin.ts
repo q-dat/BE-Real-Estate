@@ -13,6 +13,8 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       price,
       priceUnit,
       area,
+      length,
+      width,
       province,
       district,
       ward,
@@ -24,7 +26,9 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       videoDescription,
       status,
       author,
-      adminNote
+      adminNote,
+      postedAt,
+      expiredAt
     } = req.body
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
@@ -48,6 +52,8 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       price,
       priceUnit,
       area,
+      length,
+      width,
       province,
       district,
       ward,
@@ -59,7 +65,9 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       videoDescription,
       status,
       author,
-      adminNote
+      adminNote,
+      postedAt,
+      expiredAt
     })
 
     // Sinh code từ 7 ký tự cuối của _id

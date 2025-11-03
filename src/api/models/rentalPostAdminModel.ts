@@ -16,6 +16,8 @@ export interface IRentalPostAdmin extends Document {
   price: number // giá cho thuê (VNĐ)
   priceUnit: string // đơn vị giá (vd: "VNĐ/tháng")
   area: number // diện tích (m2)
+  length?: string // chiều dài
+  width?: string // chiều rộng
   province: string // tỉnh/thành phố
   district: string // quận/huyện
   ward?: string // phường/xã
@@ -25,9 +27,12 @@ export interface IRentalPostAdmin extends Document {
   youtubeLink?: string // link video Youtube người đăng nhập
   videoTitle?: string // tiêu đề video minh họa
   videoDescription?: string // mô tả ngắn cho video
+  postType: 'basic' | 'vip1' | 'vip2' | 'vip3' | 'highlight' // loại tin
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
   author?: string // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
+  postedAt?: Date // ngày đăng tin
+  expiredAt?: Date // ngày hết hạn tin
   createdAt: string // ngày tạo tin
   updatedAt: string // ngày cập nhật gần nhất
 }
@@ -44,6 +49,8 @@ const RentalPostSchema: Schema = new Schema(
     price: { type: Number, required: true, min: 0 },
     priceUnit: { type: String, required: true },
     area: { type: Number, required: true, min: 0 },
+    length: { type: String },
+    width: { type: String },
     province: { type: String, required: true },
     district: { type: String, required: true },
     ward: { type: String },
@@ -56,15 +63,24 @@ const RentalPostSchema: Schema = new Schema(
     youtubeLink: { type: String },
     videoTitle: { type: String },
     videoDescription: { type: String },
+    postType: {
+      type: String,
+      enum: ['basic', 'vip1', 'vip2', 'vip3', 'highlight'],
+      default: 'highlight'
+    },
     status: {
       type: String,
       enum: ['active', 'pending', 'expired', 'hidden'],
       default: 'active'
     },
     author: { type: String, default: 'admin' },
-    adminNote: { type: String }
+    adminNote: { type: String },
+    postedAt: { type: Date },
+    expiredAt: { type: Date }
   },
   { timestamps: true, collection: 'rental-posts-admin' }
 )
+
 const RentalPostAdminModel = mongoose.model<IRentalPostAdmin>('RentalPostAdminModel', RentalPostSchema)
+
 export default RentalPostAdminModel

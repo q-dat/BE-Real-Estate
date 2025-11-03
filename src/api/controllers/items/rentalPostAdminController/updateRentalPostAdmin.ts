@@ -15,6 +15,8 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
       price,
       priceUnit,
       area,
+      length,
+      width,
       province,
       district,
       ward,
@@ -26,7 +28,9 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
       videoDescription,
       status,
       author,
-      adminNote
+      adminNote,
+      postedAt,
+      expiredAt
     } = req.body
 
     // Lấy file upload (nếu có)
@@ -37,7 +41,7 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
     const updateData: Record<string, any> = {
       code,
       images,
-      phoneNumbers,
+     phoneNumbers,
       zaloLink,
       title,
       description,
@@ -45,6 +49,8 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
       price,
       priceUnit,
       area,
+      length,
+      width,
       province,
       district,
       ward,
@@ -56,7 +62,9 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
       videoDescription,
       status,
       author,
-      adminNote
+      adminNote,
+      postedAt,
+      expiredAt
     }
 
     // Nếu có hình ảnh mới, upload và gán lại
