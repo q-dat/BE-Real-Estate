@@ -24,7 +24,6 @@ export interface IRentalPost extends Document {
   district: string // quận/huyện
   ward?: string // phường/xã
   address: string // địa chỉ cụ thể
-  coordinates?: { lat: number; lng: number } // vị trí bản đồ
 
   /** -------------------- HÌNH ẢNH & VIDEO -------------------- */
   images: string[] // danh sách ảnh
@@ -86,10 +85,6 @@ const RentalPostSchema: Schema = new Schema(
     district: { type: String, required: true },
     ward: { type: String },
     address: { type: String, required: true },
-    coordinates: {
-      lat: { type: Number },
-      lng: { type: Number }
-    },
     images: { type: [String], required: true },
     amenities: { type: [String] },
     youtubeLink: { type: String },

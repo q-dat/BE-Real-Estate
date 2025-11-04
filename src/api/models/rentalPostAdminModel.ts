@@ -22,7 +22,6 @@ export interface IRentalPostAdmin extends Document {
   district: string // quận/huyện
   ward?: string // phường/xã
   address: string // địa chỉ cụ thể
-  coordinates?: { lat: number; lng: number } // vị trí bản đồ
   amenities?: string // tiện ích đi kèm (vd: máy lạnh, chỗ để xe,...)
   youtubeLink?: string // link video Youtube người đăng nhập
   videoTitle?: string // tiêu đề video minh họa
@@ -55,10 +54,6 @@ const RentalPostSchema: Schema = new Schema(
     district: { type: String, required: true },
     ward: { type: String },
     address: { type: String, required: true },
-    coordinates: {
-      lat: { type: Number },
-      lng: { type: Number }
-    },
     amenities: { type: String },
     youtubeLink: { type: String },
     videoTitle: { type: String },
