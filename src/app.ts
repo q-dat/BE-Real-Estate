@@ -33,7 +33,7 @@ connectDB()
 // Allowed origins for CORS
 export const allowedOrigins = [
   process.env.HOST_NAME || 'https://www.7teck.vn',
-  'https://7teck.vercel.app',
+  'https://fe-real-estate-sooty.vercel.app/',
   'http://localhost:5173',
   'http://localhost:3000'
 ]
