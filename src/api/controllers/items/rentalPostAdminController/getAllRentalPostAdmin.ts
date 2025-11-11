@@ -8,7 +8,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     //   return
     // }
 
-    const { catalogID, name } = req.query
+    const { catalogID, title } = req.query
     const filterQuery: Record<string, unknown> = {}
 
     // Lọc theo catalogID nếu có
@@ -16,12 +16,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filterQuery.category = catalogID
     }
 
-    // Lọc theo name (dùng regex để hỗ trợ tìm kiếm không phân biệt hoa thường)
-    if (name && typeof name === 'string') {
-      filterQuery.name = { $regex: name, $options: 'i' }
+    // Lọc theo title (dùng regex để hỗ trợ tìm kiếm không phân biệt hoa thường)
+    if (title && typeof title === 'string') {
+      filterQuery.title = { $regex: title, $options: 'i' }
     }
 
-    // Lấy tất cả bài đăng bài đăng theo filter
+    // Lấy tất cả bài đăng theo filter
     const rentalPosts = await RentalPostAdminModel.find(filterQuery)
       .populate({
         path: 'category',
@@ -32,7 +32,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     const count = await RentalPostAdminModel.countDocuments()
 
     const response = {
-      message: 'Lấy danh sách bài đăng bài đăng thành công!',
+      message: 'Lấy danh sách bài đăng thành công!',
       count,
       visibleCount: rentalPosts.length,
       rentalPosts: rentalPosts
