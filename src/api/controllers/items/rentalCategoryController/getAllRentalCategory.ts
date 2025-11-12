@@ -1,9 +1,16 @@
 import { Request, Response } from 'express'
-import RentalCategoryModel from "~/api/models/rentalCategoryModel"
+import RentalCategoryModel from '~/api/models/rentalCategoryModel'
 
 export const getAllRentalCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const rentalCategories = await RentalCategoryModel.find().lean()
+    const { name } = req.query
+    const filterQuery: Record<string, unknown> = {}
+    
+    if (name && typeof name === 'string') {
+      filterQuery.name = { $regex: name, $options: 'i' }
+    }
+
+    const rentalCategories = await RentalCategoryModel.find(filterQuery).lean()
 
     res.status(200).json({
       message: 'Lấy danh sách danh mục bài đăng thành công!',
