@@ -1,9 +1,9 @@
 import express from 'express'
-import { getAllRentalCategory } from '../controllers/items/rentalCategoryController/getAllRentalCategory'
+import { getAllRentalCategory } from '../controllers/catalog/rentalCategoryController/getAllRentalCategory'
 import uploadCloud from '~/config/cloudinary'
-import { createRentalCategory } from '../controllers/items/rentalCategoryController/createRentalCategory'
-import { updateRentalCategory } from '../controllers/items/rentalCategoryController/updateRentalCategory'
-import { deleteRentalCategory } from '../controllers/items/rentalCategoryController/deleteRentalCategory'
+import { createRentalCategory } from '../controllers/catalog/rentalCategoryController/createRentalCategory'
+import { updateRentalCategory } from '../controllers/catalog/rentalCategoryController/updateRentalCategory'
+import { deleteRentalCategory } from '../controllers/catalog/rentalCategoryController/deleteRentalCategory'
 
 const rentalCategoryRoutes = express.Router()
 
