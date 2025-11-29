@@ -3,10 +3,11 @@ import RentalCategoryModel from '~/api/models/rentalCategoryModel'
 
 export const updateRentalCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description } = req.body
+    const { name, categoryCode, description } = req.body
 
     const updateData: Record<string, any> = {
       name,
+      categoryCode,
       description
     }
     const updatedRentalCategory = await RentalCategoryModel.findByIdAndUpdate(req.params.id, updateData, { new: true })

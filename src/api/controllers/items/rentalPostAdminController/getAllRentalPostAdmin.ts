@@ -8,14 +8,17 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     //   return
     // }
 
-    const { catalogID, title } = req.query
+    const { catalogID, categoryCode, title } = req.query
     const filterQuery: Record<string, unknown> = {}
 
     // Lọc theo catalogID nếu có
     if (catalogID) {
       filterQuery.category = catalogID
     }
-
+    // Lọc theo categoryCode nếu có
+    if (categoryCode) {
+      filterQuery['category.categoryCode'] = Number(categoryCode)
+    }
     // Lọc theo title (dùng regex để hỗ trợ tìm kiếm không phân biệt hoa thường)
     if (title && typeof title === 'string') {
       filterQuery.title = { $regex: title, $options: 'i' }

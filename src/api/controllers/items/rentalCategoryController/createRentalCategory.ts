@@ -3,13 +3,14 @@ import RentalCategoryModel from '~/api/models/rentalCategoryModel'
 
 export const createRentalCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description } = req.body
+    const { name, categoryCode, description } = req.body
     if (!name) {
       res.status(400).json({ message: 'Tên danh mục là bắt buộc.' })
       return
     }
     const newRentalCategory = new RentalCategoryModel({
       name,
+      categoryCode,
       description
     })
 
