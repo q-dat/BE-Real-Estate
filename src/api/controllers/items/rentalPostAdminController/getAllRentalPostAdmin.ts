@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import mongoose from 'mongoose'
 import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
 
 export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -11,39 +12,52 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     const { catalogID, categoryCode, title } = req.query
     const filterQuery: Record<string, unknown> = {}
 
-    // Lọc theo catalogID nếu có
-    if (catalogID) {
-      filterQuery.category = catalogID
-    }
-    // Lọc theo categoryCode nếu có
-    if (categoryCode) {
-      filterQuery['category.categoryCode'] = Number(categoryCode)
-    }
-    // Lọc theo title (dùng regex để hỗ trợ tìm kiếm không phân biệt hoa thường)
-    if (title && typeof title === 'string') {
-      filterQuery.title = { $regex: title, $options: 'i' }
-    }
+    // Lọc theo catalogID
+    if (catalogID) filterQuery.category = catalogID
 
-    // Lấy tất cả bài đăng theo filter
-    const rentalPosts = await RentalPostAdminModel.find(filterQuery)
-      .populate({
-        path: 'category',
-        select: '-createdAt -updatedAt -__v'
-      })
-      .lean()
+    // Lọc theo title
+    if (title && typeof title === 'string') filterQuery.title = { $regex: title, $options: 'i' }
+
+    const categoryCodeNum = Number(categoryCode) || undefined
+
+    const rentalPosts = await RentalPostAdminModel.aggregate([
+      {
+        $lookup: {
+          from: 'rentalcategories', // tên collection của category
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      {
+        $match: {
+          ...(catalogID ? { category: new mongoose.Types.ObjectId(String(catalogID)) } : {}),
+          ...(title ? { title: { $regex: title, $options: 'i' } } : {}),
+          ...(categoryCode ? { 'category.categoryCode': categoryCodeNum } : {})
+        }
+      }
+    ])
 
     const count = await RentalPostAdminModel.countDocuments()
 
-    const response = {
+    if (!rentalPosts.length) {
+      res.status(200).json({
+        message: 'Không có bài đăng nào phù hợp với bộ lọc',
+        count,
+        visibleCount: 0,
+        rentalPosts: []
+      })
+      return
+    }
+
+    res.status(200).json({
       message: 'Lấy danh sách bài đăng thành công!',
       count,
       visibleCount: rentalPosts.length,
-      rentalPosts: rentalPosts
-    }
-
+      rentalPosts
+    })
     // await setCachedResponse(cacheKey, response)
-
-    res.status(200).json(response)
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })
   }
