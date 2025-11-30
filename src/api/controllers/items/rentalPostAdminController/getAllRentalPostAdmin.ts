@@ -10,20 +10,11 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     // }
 
     const { catalogID, categoryCode, title } = req.query
-    const filterQuery: Record<string, unknown> = {}
-
-    // Lọc theo catalogID
-    if (catalogID) filterQuery.category = catalogID
-
-    // Lọc theo title
-    if (title && typeof title === 'string') filterQuery.title = { $regex: title, $options: 'i' }
-
-    const categoryCodeNum = Number(categoryCode) || undefined
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
         $lookup: {
-          from: 'rentalcategories', // tên collection của category
+          from: 'rental-categories', // tên collection của category
           localField: 'category',
           foreignField: '_id',
           as: 'category'
@@ -32,9 +23,9 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
       {
         $match: {
-          ...(catalogID ? { category: new mongoose.Types.ObjectId(String(catalogID)) } : {}),
-          ...(title ? { title: { $regex: title, $options: 'i' } } : {}),
-          ...(categoryCode ? { 'category.categoryCode': categoryCodeNum } : {})
+          ...(title ? { title: { $regex: String(title), $options: 'i' } } : {}),
+          ...(catalogID ? { 'category._id': new mongoose.Types.ObjectId(String(catalogID)) } : {}),
+          ...(categoryCode ? { 'category.categoryCode': Number(categoryCode) } : {})
         }
       }
     ])
