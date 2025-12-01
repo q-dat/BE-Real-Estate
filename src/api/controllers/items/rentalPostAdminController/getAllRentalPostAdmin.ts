@@ -11,39 +11,29 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
 
     const { catalogID, categoryCode, title } = req.query
 
+    const filters: Record<string, unknown> = {}
+
+    if (title) filters.title = { $regex: String(title), $options: 'i' }
+    if (catalogID) filters['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
+    if (categoryCode) filters['category.categoryCode'] = Number(categoryCode)
+
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
         $lookup: {
-          from: 'rental-categories', // tên collection của category
+          from: 'rental-categories',
           localField: 'category',
           foreignField: '_id',
           as: 'category'
         }
       },
       { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
-      {
-        $match: {
-          ...(title ? { title: { $regex: String(title), $options: 'i' } } : {}),
-          ...(catalogID ? { 'category._id': new mongoose.Types.ObjectId(String(catalogID)) } : {}),
-          ...(categoryCode ? { 'category.categoryCode': Number(categoryCode) } : {})
-        }
-      }
+      { $match: filters }
     ])
 
     const count = await RentalPostAdminModel.countDocuments()
 
-    if (!rentalPosts.length) {
-      res.status(200).json({
-        message: 'Không có bài đăng nào phù hợp với bộ lọc',
-        count,
-        visibleCount: 0,
-        rentalPosts: []
-      })
-      return
-    }
-
     res.status(200).json({
-      message: 'Lấy danh sách bài đăng thành công!',
+      message: rentalPosts.length ? 'Lấy danh sách bài đăng thành công!' : 'Không có bài đăng nào phù hợp với bộ lọc',
       count,
       visibleCount: rentalPosts.length,
       rentalPosts
