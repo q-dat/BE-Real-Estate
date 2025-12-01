@@ -10,8 +10,14 @@ const rentalPostAdminRoutes = express.Router()
 
 rentalPostAdminRoutes.get('/rental-admin-posts', getAllRentalPostsAdmin)
 rentalPostAdminRoutes.get('/rental-admin-post/:id', getRentalPostAdminById)
-rentalPostAdminRoutes.post('/rental-admin-post', uploadCloud.fields([{ name: 'images', maxCount: 25 }]), createRentalPostAdmin)
-rentalPostAdminRoutes.put('/rental-admin-post/:id', uploadCloud.fields([{ name: 'images', maxCount: 25 }]), updateRentalPostAdmin)
+
+const uploadFields = uploadCloud.fields([
+  { name: 'images', maxCount: 25 },
+  { name: 'adminImage', maxCount: 25 }
+])
+
+rentalPostAdminRoutes.post('/rental-admin-post', uploadFields, createRentalPostAdmin)
+rentalPostAdminRoutes.put('/rental-admin-post/:id', uploadFields, updateRentalPostAdmin)
 rentalPostAdminRoutes.delete('/rental-admin-post/:id', deleteRentalPostAdmin)
 
 export default rentalPostAdminRoutes

@@ -43,6 +43,7 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
+    const adminImageFiles = files?.['adminImage'] || []
 
     if (!imageFiles.length) {
       res.status(400).json({ message: 'Hình ảnh là bắt buộc.' })
@@ -50,10 +51,11 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     }
 
     const imageUrls = await Promise.all(imageFiles.map((f) => uploadImageToCloudinary(f.path)))
+    const adminImageUrls = await Promise.all(adminImageFiles.map((f) => uploadImageToCloudinary(f.path)))
 
-    // Tạo document trước để có _id
     const tempPost = new RentalPostAdminModel({
       images: imageUrls,
+      adminImage: adminImageUrls,
       phoneNumbers,
       zaloLink,
       title,
