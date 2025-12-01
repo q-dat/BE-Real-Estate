@@ -40,6 +40,7 @@ export interface IRentalPostAdmin extends Document {
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
   author?: string // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
+  adminImages: string[] // ảnh dành cho admin
   postedAt?: Date // ngày đăng tin
   expiredAt?: Date // ngày hết hạn tin
   createdAt: string // ngày tạo tin
@@ -96,7 +97,7 @@ const RentalPostSchema: Schema = new Schema(
     },
     author: { type: String, default: 'admin' },
     adminNote: { type: String },
-    adminImage: { type: [String], default: [] },
+    adminImages: { type: [String], default: [] },
     postedAt: { type: Date, default: Date.now },
     expiredAt: { type: Date }
   },

@@ -13,7 +13,7 @@ rentalPostAdminRoutes.get('/rental-admin-post/:id', getRentalPostAdminById)
 
 const uploadFields = uploadCloud.fields([
   { name: 'images', maxCount: 25 },
-  { name: 'adminImage', maxCount: 25 }
+  { name: 'adminImages', maxCount: 25 }
 ])
 
 rentalPostAdminRoutes.post('/rental-admin-post', uploadFields, createRentalPostAdmin)

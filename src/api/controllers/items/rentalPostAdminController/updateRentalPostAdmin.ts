@@ -7,7 +7,7 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
     const {
       code,
       images,
-      adminImage,
+      adminImages,
       phoneNumbers,
       zaloLink,
       title,
@@ -47,13 +47,13 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
     // Lấy file upload (nếu có)
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imagesFiles = files?.['images'] || []
-    const adminImageFiles = files?.['adminImage'] || []
+    const adminImagesFiles = files?.['adminImages'] || []
 
     // Object lưu field cần cập nhật
     const updateData: Record<string, any> = {
       code,
       images,
-      adminImage,
+      adminImages,
       phoneNumbers,
       zaloLink,
       title,
@@ -96,10 +96,10 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
       updateData.images = imageUrls
     }
 
-    // Nếu có adminImage mới, upload và gán lại
-    if (adminImageFiles.length > 0) {
-      const adminImageUrls = await Promise.all(adminImageFiles.map((file) => uploadImageToCloudinary(file.path)))
-      updateData.adminImage = adminImageUrls
+    // Nếu có adminImages mới, upload và gán lại
+    if (adminImagesFiles.length > 0) {
+      const adminImagesUrls = await Promise.all(adminImagesFiles.map((file) => uploadImageToCloudinary(file.path)))
+      updateData.adminImages = adminImagesUrls
     }
 
     // Thực hiện cập nhật trong MongoDB
