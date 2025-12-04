@@ -13,36 +13,31 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
 
     const filters: Record<string, unknown> = {}
 
-    // TITLE
+    // Lọc tiêu đề
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
 
-    // CATEGORY
-    if (catalogID) {
-      filters['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
+    // Lọc theo khoảng giá hoặc giá <= input
+    if (priceFrom && priceTo) {
+      filters.price = { $gte: Number(priceFrom), $lte: Number(priceTo) }
+    } else if (price) {
+      filters.price = { $lte: Number(price) }
     }
+
+    // Diện tích >= input
+    if (area) {
+      filters.area = { $gte: Number(area) }
+    }
+
+    const categoryMatch: Record<string, unknown> = {}
 
     if (categoryCode) {
-      filters['category.categoryCode'] = Number(categoryCode)
+      categoryMatch['category.categoryCode'] = Number(categoryCode)
     }
 
-    // --- PRICE FILTER ---
-    if (priceFrom && priceTo) {
-      // Lọc khoảng giá
-      const from = Number(priceFrom)
-      const to = Number(priceTo)
-      filters.price = { $gte: from, $lte: to }
-    } else if (price) {
-      // Lọc <= giá truyền vào (không dùng chênh lệch)
-      const input = Number(price)
-      filters.price = { $lte: input }
-    }
-
-    // --- AREA FILTER ---
-    if (area) {
-      const a = Number(area)
-      filters.area = { $gte: a }
+    if (catalogID) {
+      categoryMatch['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
     }
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
@@ -54,12 +49,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
           as: 'category'
         }
       },
-      {
-        $unwind: {
-          path: '$category',
-          preserveNullAndEmptyArrays: true
-        }
-      },
+      { $unwind: '$category' },
+
+      // Match theo category, đúng chuẩn vì đã có lookup
+      { $match: categoryMatch },
+
+      // Match theo filters còn lại
       { $match: filters }
     ])
 
