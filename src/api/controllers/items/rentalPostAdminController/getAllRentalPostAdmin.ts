@@ -9,13 +9,41 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     //   return
     // }
 
-    const { catalogID, categoryCode, title } = req.query
+    const { catalogID, categoryCode, title, price, priceFrom, priceTo, area } = req.query
 
     const filters: Record<string, unknown> = {}
 
-    if (title) filters.title = { $regex: String(title), $options: 'i' }
-    if (catalogID) filters['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
-    if (categoryCode) filters['category.categoryCode'] = Number(categoryCode)
+    // TITLE
+    if (title) {
+      filters.title = { $regex: String(title), $options: 'i' }
+    }
+
+    // CATEGORY
+    if (catalogID) {
+      filters['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
+    }
+
+    if (categoryCode) {
+      filters['category.categoryCode'] = Number(categoryCode)
+    }
+
+    // --- PRICE FILTER ---
+    if (priceFrom && priceTo) {
+      // Lọc khoảng giá
+      const from = Number(priceFrom)
+      const to = Number(priceTo)
+      filters.price = { $gte: from, $lte: to }
+    } else if (price) {
+      // Lọc <= giá truyền vào (không dùng chênh lệch)
+      const input = Number(price)
+      filters.price = { $lte: input }
+    }
+
+    // --- AREA FILTER ---
+    if (area) {
+      const a = Number(area)
+      filters.area = { $gte: a }
+    }
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
@@ -26,7 +54,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
           as: 'category'
         }
       },
-      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      {
+        $unwind: {
+          path: '$category',
+          preserveNullAndEmptyArrays: true
+        }
+      },
       { $match: filters }
     ])
 
@@ -38,7 +71,6 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       visibleCount: rentalPosts.length,
       rentalPosts
     })
-    // await setCachedResponse(cacheKey, response)
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })
   }

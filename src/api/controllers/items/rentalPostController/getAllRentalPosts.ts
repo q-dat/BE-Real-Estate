@@ -39,8 +39,6 @@ export const getAllRentalPosts = async (req: Request, res: Response): Promise<vo
       rentalPosts: rentalPosts
     }
 
-    // await setCachedResponse(cacheKey, response)
-
     res.status(200).json(response)
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })
