@@ -9,7 +9,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     //   return
     // }
 
-    const { catalogID, categoryCode, title, price, priceFrom, priceTo, area } = req.query
+    const { catalogID, categoryCode, title, price, priceFrom, priceTo, area, areaFrom, areaTo, province, district } = req.query
 
     const filters: Record<string, unknown> = {}
 
@@ -40,6 +40,17 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       categoryMatch['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
     }
 
+    if (areaFrom && areaTo) {
+      filters.area = { $gte: Number(areaFrom), $lte: Number(areaTo) }
+    }
+
+    if (province) {
+      filters.province = { $regex: String(province), $options: 'i' }
+    }
+
+    if (district) {
+      filters.district = { $regex: String(district), $options: 'i' }
+    }
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
         $lookup: {
