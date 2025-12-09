@@ -4,33 +4,47 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const updateInterior = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, status, description } = req.body
+    const { name, images, thumbnail, status, description } = req.body
 
-     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
-    const imagesFiles = files?.['images'] || []
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] }
+    const imageFiles = files?.['images'] || []
+    const thumbnailFiles = files?.['thumbnail'] || []
 
-    const updateData: Record<string, any> = {
-         name, status, description 
+    const updateData: Record<string, unknown> = {
+      name,
+      images,
+      thumbnail,
+      status,
+      description
     }
-      // Nếu có hình ảnh mới, upload và gán lại
-        if (imagesFiles.length > 0) {
-          const imageUrls = await Promise.all(imagesFiles.map((file) => uploadImageToCloudinary(file.path)))
-          updateData.images = imageUrls
-        }
-   
-    // Thực hiện cập nhật trong MongoDB
-    const updatedPost = await InteriorModel.findByIdAndUpdate(req.params.id, updateData, { new: true })
 
-    if (!updatedPost) {
-      res.status(404).json({ message: 'Bài đăng không tồn tại!' })
+    // Nếu có ảnh chính mới → upload
+    if (imageFiles.length > 0) {
+      const uploaded = await uploadImageToCloudinary(imageFiles[0].path)
+      updateData.images = uploaded
+    }
+
+    // Nếu có thumbnail mới → upload
+    if (thumbnailFiles.length > 0) {
+      const uploadedThumbs = await Promise.all(thumbnailFiles.map((f) => uploadImageToCloudinary(f.path)))
+      updateData.thumbnail = uploadedThumbs
+    }
+
+    const updated = await InteriorModel.findByIdAndUpdate(req.params.id, updateData, {
+      new: true
+    })
+
+    if (!updated) {
+      res.status(404).json({ message: 'Không tìm thấy nội thất!' })
       return
     }
 
     res.status(200).json({
-      message: 'Cập nhật bài đăng thành công!',
-      data: updatedPost
+      message: 'Cập nhật nội thất thành công!',
+      data: updated
     })
-  } catch (error: any) {
-    res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })
+  } catch (error: unknown) {
+    const err = error as Error
+    res.status(500).json({ message: 'Lỗi máy chủ!', error: err.message })
   }
 }
