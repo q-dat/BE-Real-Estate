@@ -49,8 +49,13 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     if (district) {
-      filters.district = { $regex: String(district), $options: 'i' }
+      const normalizedDistrict = String(district).trim().toLowerCase()
+
+      filters.$expr = {
+        $eq: [{ $toLower: '$district' }, normalizedDistrict]
+      }
     }
+
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
         $lookup: {
