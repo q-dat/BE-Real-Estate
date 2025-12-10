@@ -8,7 +8,7 @@ export const createInterior = async (req: Request, res: Response): Promise<void>
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
-    const thumbnailFiles = files?.['thumbnail'] || []
+    const thumbnailsFiles = files?.['thumbnails'] || []
 
     if (!imageFiles.length) {
       res.status(400).json({ message: 'Ảnh chính là bắt buộc.' })
@@ -18,15 +18,15 @@ export const createInterior = async (req: Request, res: Response): Promise<void>
     // Upload ảnh chính (chỉ 1 ảnh)
     const mainImageUrl = await uploadImageToCloudinary(imageFiles[0].path)
 
-    // Upload thumbnail (nếu có)
-    const thumbnailUrls = await Promise.all(
-      thumbnailFiles.map((f) => uploadImageToCloudinary(f.path))
+    // Upload thumbnails (nếu có)
+    const thumbnailsUrls = await Promise.all(
+      thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path))
     )
 
     const interior = new InteriorModel({
       name,
       images: mainImageUrl,
-      thumbnail: thumbnailUrls,
+      thumbnails: thumbnailsUrls,
       status,
       description
     })

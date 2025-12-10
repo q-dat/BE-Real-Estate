@@ -4,7 +4,7 @@ export interface IInterior extends Document {
   _id: string
   name: string
   images: string
-  thumbnail?: string[]
+  thumbnails?: string[]
   status?: string
   description?: string
 }
@@ -13,7 +13,7 @@ const InteriorSchema: Schema = new Schema(
   {
     name: { type: String, required: true, unique: true },
     images: { type: String, required: true },
-    thumbnail: { type: [String], default: [] },
+    thumbnails: { type: [String], default: [] },
     status: { type: String },
     description: { type: String }
   },

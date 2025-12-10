@@ -11,7 +11,7 @@ const interiorRoutes = express.Router()
 interiorRoutes.get('/interiors', getAllInterior)
 interiorRoutes.get('/interior/:id', getInteriorById)
 
-const uploadFields = uploadCloud.fields([{ name: 'images', maxCount: 99 }])
+const uploadFields = uploadCloud.fields([{ name: 'images' }, { name: 'thumbnails', maxCount: 99 }])
 
 interiorRoutes.post('/interior', uploadFields, createInterior)
 interiorRoutes.put('/interior/:id', uploadFields, updateInterior)

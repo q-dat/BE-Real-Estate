@@ -4,16 +4,16 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const updateInterior = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, images, thumbnail, status, description } = req.body
+    const { name, images, thumbnails, status, description } = req.body
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
-    const thumbnailFiles = files?.['thumbnail'] || []
+    const thumbnailsFiles = files?.['thumbnails'] || []
 
     const updateData: Record<string, unknown> = {
       name,
       images,
-      thumbnail,
+      thumbnails,
       status,
       description
     }
@@ -24,10 +24,10 @@ export const updateInterior = async (req: Request, res: Response): Promise<void>
       updateData.images = uploaded
     }
 
-    // Nếu có thumbnail mới → upload
-    if (thumbnailFiles.length > 0) {
-      const uploadedThumbs = await Promise.all(thumbnailFiles.map((f) => uploadImageToCloudinary(f.path)))
-      updateData.thumbnail = uploadedThumbs
+    // Nếu có thumbnails mới → upload
+    if (thumbnailsFiles.length > 0) {
+      const uploadedThumbs = await Promise.all(thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path)))
+      updateData.thumbnails = uploadedThumbs
     }
 
     const updated = await InteriorModel.findByIdAndUpdate(req.params.id, updateData, {
