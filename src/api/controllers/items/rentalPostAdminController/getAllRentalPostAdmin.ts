@@ -31,14 +31,15 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     const categoryMatch: Record<string, unknown> = {}
+    
+    if (catalogID) {
+      categoryMatch['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
+    }
 
     if (categoryCode) {
       categoryMatch['category.categoryCode'] = Number(categoryCode)
     }
 
-    if (catalogID) {
-      categoryMatch['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
-    }
 
     if (areaFrom && areaTo) {
       filters.area = { $gte: Number(areaFrom), $lte: Number(areaTo) }

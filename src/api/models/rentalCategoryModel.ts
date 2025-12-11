@@ -14,7 +14,7 @@ export interface IRentalCategory extends Document {
 
 const RentalCategorySchema: Schema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true, trim: true },
     categoryCode: { type: Number, required: true, unique: true },
     description: { type: String }
   },
