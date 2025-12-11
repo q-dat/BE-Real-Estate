@@ -12,19 +12,16 @@ export const deleteInterior = async (req: Request, res: Response): Promise<void>
     }
 
     /** -------------------- XÓA ẢNH TRÊN CLOUDINARY -------------------- */
-    if (deletedPost.images && deletedPost.images.length > 0) {
-      await Promise.all(
-        deletedPost.images.map(async (url: string) => {
-          const publicId = url.split('/').pop()?.split('.')[0]
-          if (publicId) {
-            try {
-              await cloudinary.uploader.destroy(publicId)
-            } catch (err) {
-              console.warn(`Không thể xóa ảnh: ${publicId}`, err)
-            }
-          }
-        })
-      )
+    if (deletedPost.images) {
+      const publicId = deletedPost.images.split('/').pop()?.split('.')[0]
+
+      if (publicId) {
+        try {
+          await cloudinary.uploader.destroy(publicId)
+        } catch (err) {
+          console.warn(`Không thể xóa ảnh: ${publicId}`, err)
+        }
+      }
     }
 
     res.status(200).json({
