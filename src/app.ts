@@ -18,6 +18,7 @@ import rentalCategoryRoutes from './api/routes/rentalCategoryRoutes'
 import rentalPostAdminRoutes from './api/routes/rentalPostRoutesAdmin'
 import interiorRoutes from './api/routes/InteriorRoutes'
 import interiorCategoryRoutes from './api/routes/interiorCategoryRoutes'
+import realEstateProjectRoutes from './api/routes/realEstateProjectRoutes'
 
 // Environment setup
 dotenv.config()
@@ -75,6 +76,7 @@ app.use('/api/', rentalPostAdminRoutes)
 app.use('/api/', rentalCategoryRoutes)
 app.use('/api/', interiorRoutes)
 app.use('/api/', interiorCategoryRoutes)
+app.use('/api/', realEstateProjectRoutes)
 
 // EJS setup
 app.set('view engine', 'ejs')
