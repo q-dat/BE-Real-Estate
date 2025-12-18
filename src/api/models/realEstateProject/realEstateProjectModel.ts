@@ -2,14 +2,13 @@ import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IRealEstateProject extends Document {
   _id: string
-
   name: string // Tên dự án
   slug: string // SEO
   introduction?: string // Giới thiệu
   description?: string // Mô tả chi tiết
   article?: string // Bài viết
   pricing?: string // Bảng giá (string)
-  status?: string // Tình trạng (ví dụ: "Đang mở bán", "Sắp mở bán", "Đã bàn giao")
+  status?: string // Tình trạng (ví dụ: "0: Đang mở bán", "1: Sắp mở bán", "2: Đã bàn giao")
   projectType?: string // Loại hình dự án
   area?: string // Diện tích (vd: "80–120 m2")
   investor?: string // Chủ đầu tư
