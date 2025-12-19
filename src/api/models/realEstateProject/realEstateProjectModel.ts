@@ -30,6 +30,8 @@ export interface IRealEstateProject extends Document {
 const RealEstateProjectSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
+    images: { type: String, required: true },
+    thumbnails: { type: [String], default: [] },
     slug: { type: String, required: true, unique: true },
     introduction: { type: String },
     description: { type: String },
