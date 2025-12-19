@@ -1,6 +1,6 @@
 import express from 'express'
-import { getAllInterior } from '../controllers/items/interiorController/getAllInterior'
 import uploadCloud from '~/config/cloudinary'
+import { getAllInterior } from '../controllers/items/interiorController/getAllInterior'
 import { getInteriorById } from '../controllers/items/interiorController/getInteriorById'
 import { createInterior } from '../controllers/items/interiorController/createInterior'
 import { updateInterior } from '../controllers/items/interiorController/updateInterior'

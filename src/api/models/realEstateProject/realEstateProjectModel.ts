@@ -3,6 +3,12 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface IRealEstateProject extends Document {
   _id: string
   name: string // Tên dự án
+  images: string
+  thumbnails?: string[]
+  province?: string // tỉnh/thành phố
+  district?: string // quận/huyện
+  ward?: string // phường/xã
+  address: string // địa chỉ cụ thể
   slug: string // SEO
   introduction?: string // Giới thiệu
   description?: string // Mô tả chi tiết
@@ -13,7 +19,6 @@ export interface IRealEstateProject extends Document {
   area?: string // Diện tích (vd: "80–120 m2")
   investor?: string // Chủ đầu tư
   partners?: string // Đối tác
-  location?: string // Vị trí (text hoặc địa chỉ)
   amenities?: string // Tiện ích (text / HTML)
   hotline?: string
   email?: string
@@ -35,7 +40,10 @@ const RealEstateProjectSchema: Schema = new Schema(
     area: { type: String },
     investor: { type: String },
     partners: { type: String },
-    location: { type: String },
+    province: { type: String },
+    district: { type: String },
+    address: { type: String },
+    ward: { type: String },
     amenities: { type: String },
     hotline: { type: String },
     email: { type: String },

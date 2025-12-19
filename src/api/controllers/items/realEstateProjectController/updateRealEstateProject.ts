@@ -1,15 +1,76 @@
 import { Request, Response } from 'express'
 import RealEstateProjectModel from '~/api/models/realEstateProject/realEstateProjectModel'
+import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const updateRealEstateProject = async (req: Request, res: Response): Promise<void> => {
   try {
-    const updateData: Record<string, unknown> = { ...req.body }
+    const {
+      name,
+      slug,
+      introduction,
+      description,
+      article,
+      pricing,
+      status,
+      projectType,
+      area,
+      investor,
+      partners,
+      province,
+      district,
+      ward,
+      address,
+      amenities,
+      hotline,
+      email,
+      zalo,
+      message,
+      images,
+      thumbnails
+    } = req.body
 
-    const updated = await RealEstateProjectModel.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    )
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] }
+    const imageFiles = files?.['images'] || []
+    const thumbnailsFiles = files?.['thumbnails'] || []
+
+    const updateData: Record<string, unknown> = {
+      name,
+      slug,
+      introduction,
+      description,
+      article,
+      pricing,
+      status,
+      projectType,
+      area,
+      investor,
+      partners,
+      province,
+      district,
+      ward,
+      address,
+      amenities,
+      hotline,
+      email,
+      zalo,
+      message,
+      images,
+      thumbnails
+    }
+
+    // Nếu có ảnh chính mới → upload
+    if (imageFiles.length > 0) {
+      const uploaded = await uploadImageToCloudinary(imageFiles[0].path)
+      updateData.images = uploaded
+    }
+
+    // Nếu có thumbnails mới → upload
+    if (thumbnailsFiles.length > 0) {
+      const uploadedThumbs = await Promise.all(thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path)))
+      updateData.thumbnails = uploadedThumbs
+    }
+
+    const updated = await RealEstateProjectModel.findByIdAndUpdate(req.params.id, updateData, { new: true })
 
     if (!updated) {
       res.status(404).json({ message: 'Không tìm thấy dự án!' })
@@ -22,6 +83,9 @@ export const updateRealEstateProject = async (req: Request, res: Response): Prom
     })
   } catch (error: unknown) {
     const err = error as Error
-    res.status(500).json({ message: 'Lỗi máy chủ!', error: err.message })
+    res.status(500).json({
+      message: 'Lỗi máy chủ!',
+      error: err.message
+    })
   }
 }

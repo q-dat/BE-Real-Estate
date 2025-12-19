@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import RealEstateProjectModel from '~/api/models/realEstateProject/realEstateProjectModel'
+import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const createRealEstateProject = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,7 +16,10 @@ export const createRealEstateProject = async (req: Request, res: Response): Prom
       area,
       investor,
       partners,
-      location,
+      province,
+      district,
+      ward,
+      address,
       amenities,
       hotline,
       email,
@@ -34,8 +38,25 @@ export const createRealEstateProject = async (req: Request, res: Response): Prom
       return
     }
 
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] }
+    const imageFiles = files?.['images'] || []
+    const thumbnailsFiles = files?.['thumbnails'] || []
+
+    if (!imageFiles.length) {
+      res.status(400).json({ message: 'Ảnh chính là bắt buộc.' })
+      return
+    }
+
+    // Upload ảnh chính (chỉ 1 ảnh)
+    const mainImageUrl = await uploadImageToCloudinary(imageFiles[0].path)
+
+    // Upload thumbnails (nếu có)
+    const thumbnailsUrls = await Promise.all(thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path)))
+
     const project = new RealEstateProjectModel({
       name,
+      images: mainImageUrl,
+      thumbnails: thumbnailsUrls,
       slug,
       introduction,
       description,
@@ -46,7 +67,10 @@ export const createRealEstateProject = async (req: Request, res: Response): Prom
       area,
       investor,
       partners,
-      location,
+      province,
+      district,
+      ward,
+      address,
       amenities,
       hotline,
       email,
