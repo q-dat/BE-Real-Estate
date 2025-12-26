@@ -13,7 +13,6 @@ import { errorHandler } from './middlewares/errorMiddleware'
 
 // Routes
 // import authRoutes from './api/routes/auth/authRoutes'
-import rentalPostRoutes from './api/routes/rentalPostRoutes'
 import rentalCategoryRoutes from './api/routes/rentalCategoryRoutes'
 import rentalPostAdminRoutes from './api/routes/rentalPostRoutesAdmin'
 import interiorRoutes from './api/routes/InteriorRoutes'
@@ -71,7 +70,6 @@ app.options('*', cors())
 // app.use(sessionHeaderMiddleware)
 // ----------------------------------------------------------------
 // API routes
-app.use('/api/', rentalPostRoutes)
 app.use('/api/', rentalPostAdminRoutes)
 app.use('/api/', rentalCategoryRoutes)
 app.use('/api/', interiorRoutes)

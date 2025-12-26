@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
+import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
 import { v2 as cloudinary } from 'cloudinary'
 
 export const deleteRentalPostAdmin = async (req: Request, res: Response): Promise<void> => {

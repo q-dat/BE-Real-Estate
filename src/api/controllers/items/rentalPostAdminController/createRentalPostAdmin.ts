@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
+import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
 import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const createRentalPostAdmin = async (req: Request, res: Response): Promise<void> => {

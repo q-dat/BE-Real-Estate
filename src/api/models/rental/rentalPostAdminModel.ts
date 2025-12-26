@@ -1,9 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { IRentalCategory } from './rentalCategoryModel'
 
-/**
- * RentalPost - Bài đăng cho thuê / tìm người ở ghép / nhà, mặt bằng
- */
 export interface IRentalPostAdmin extends Document {
   _id: string // id bài đăng (ObjectId)
   code: string // mã bài đăng ngắn (vd: "POST-17234")

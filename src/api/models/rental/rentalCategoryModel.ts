@@ -1,8 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-/**
- * RentalCategory - Danh mục loại hình cho thuê
- */
 export interface IRentalCategory extends Document {
   _id: string // id danh mục (ObjectId)
   name: string // tên hiển thị (vd: "Cho thuê căn hộ")

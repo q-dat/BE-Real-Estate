@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
+import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
 
 // GET By ID
 export const getRentalPostAdminById = async (req: Request, res: Response): Promise<void> => {

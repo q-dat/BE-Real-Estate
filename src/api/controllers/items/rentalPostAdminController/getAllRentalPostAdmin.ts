@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import mongoose from 'mongoose'
-import RentalPostAdminModel from '~/api/models/rentalPostAdminModel'
+import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
 
 export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promise<void> => {
   try {

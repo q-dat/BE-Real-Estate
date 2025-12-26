@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import RentalCategoryModel from '~/api/models/rentalCategoryModel'
+import RentalCategoryModel from '~/api/models/rental/rentalCategoryModel'
 
 export const updateRentalCategory = async (req: Request, res: Response): Promise<void> => {
   try {
