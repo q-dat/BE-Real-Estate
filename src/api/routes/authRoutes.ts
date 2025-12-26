@@ -8,6 +8,7 @@ import { verifyEmail } from '../controllers/auth/verifyEmail'
 import { resetPassword } from '../controllers/auth/resetPassword'
 import { changePassword } from '../controllers/auth/changePassword'
 import { confirmResetPassword } from '../controllers/auth/confirmResetPassword'
+import { me } from '../controllers/auth/me'
 
 const authRoutes = express.Router()
 
@@ -16,6 +17,7 @@ authRoutes.post('/login', login)
 
 const uploadAvatar = uploadCloud.fields([{ name: 'avatar', maxCount: 1 }])
 
+authRoutes.get('/me', requireAuth, me)
 authRoutes.put('/profile', requireAuth, uploadAvatar, updateProfile)
 authRoutes.post('/verify-email', verifyEmail)
 authRoutes.post('/reset-password', resetPassword)
