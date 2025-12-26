@@ -9,6 +9,7 @@ export interface IInterior extends Document {
   thumbnails?: string[]
   status?: string
   description?: string
+  content?: string
 }
 
 const InteriorSchema: Schema = new Schema(
@@ -18,7 +19,8 @@ const InteriorSchema: Schema = new Schema(
     images: { type: String, required: true },
     thumbnails: { type: [String], default: [] },
     status: { type: String },
-    description: { type: String }
+    description: { type: String },
+    content: { type: String }
   },
   { timestamps: true, collection: 'interior' }
 )

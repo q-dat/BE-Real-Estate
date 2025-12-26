@@ -4,7 +4,7 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const updateInterior = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, category, images, thumbnails, status, description } = req.body
+    const { name, category, images, thumbnails, status, description, content } = req.body
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
@@ -16,7 +16,8 @@ export const updateInterior = async (req: Request, res: Response): Promise<void>
       images,
       thumbnails,
       status,
-      description
+      description,
+      content
     }
 
     // Nếu có ảnh chính mới → upload

@@ -4,7 +4,7 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const createInterior = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, category, status, description } = req.body
+    const { name, category, status, description, content } = req.body
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
@@ -27,7 +27,8 @@ export const createInterior = async (req: Request, res: Response): Promise<void>
       images: mainImageUrl,
       thumbnails: thumbnailsUrls,
       status,
-      description
+      description,
+      content
     })
 
     const saved = await interior.save()
