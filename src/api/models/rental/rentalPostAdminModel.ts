@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { IRentalCategory } from './rentalCategoryModel'
+import { IUser } from '../auth/UserModel'
 
 export interface IRentalPostAdmin extends Document {
   _id: string // id bài đăng (ObjectId)
@@ -35,7 +36,7 @@ export interface IRentalPostAdmin extends Document {
   videoDescription?: string // mô tả ngắn cho video
   postType: 'basic' | 'vip1' | 'vip2' | 'vip3' | 'highlight' // loại tin
   status: 'active' | 'pending' | 'expired' | 'hidden' // trạng thái tin
-  author?: string // người đăng tin
+  author: IUser // người đăng tin
   adminNote?: string // ghi chú nội bộ cho admin
   adminImages: string[] // ảnh dành cho admin
   postedAt?: Date // ngày đăng tin
@@ -92,7 +93,12 @@ const RentalPostSchema: Schema = new Schema(
       enum: ['active', 'pending', 'expired', 'hidden'],
       default: 'active'
     },
-    author: { type: String, default: 'admin' },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'UserModel',
+      required: true,
+      index: true
+    },
     adminNote: { type: String },
     adminImages: { type: [String], default: [] },
     postedAt: { type: Date, default: Date.now },
