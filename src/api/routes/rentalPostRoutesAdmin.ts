@@ -5,8 +5,12 @@ import { getRentalPostAdminById } from '../controllers/items/rentalPostAdminCont
 import { createRentalPostAdmin } from '../controllers/items/rentalPostAdminController/createRentalPostAdmin'
 import { deleteRentalPostAdmin } from '../controllers/items/rentalPostAdminController/deleteRentalPostAdmin'
 import { updateRentalPostAdmin } from '../controllers/items/rentalPostAdminController/updateRentalPostAdmin'
+import { requireAuth } from '~/middlewares/requireAuth'
+import { requireAdmin } from '~/middlewares/requireAdmin'
+import { getMyRentalPostsAdmin } from '../controllers/items/rentalPostAdminController/getMyRentalPostsAdmin'
 
 const rentalPostAdminRoutes = express.Router()
+rentalPostAdminRoutes.get('/rental-posts/me', requireAuth, requireAdmin, getMyRentalPostsAdmin)
 
 rentalPostAdminRoutes.get('/rental-admin-posts', getAllRentalPostsAdmin)
 rentalPostAdminRoutes.get('/rental-admin-post/:id', getRentalPostAdminById)
