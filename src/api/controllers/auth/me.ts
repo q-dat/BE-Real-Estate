@@ -11,7 +11,7 @@ export const me = async (req: AuthRequest, res: Response): Promise<void> => {
       return
     }
 
-    const user = await UserModel.findById(userId).select('email role avatar isActive')
+    const user = await UserModel.findById(userId).select('email role isActive profile')
 
     if (!user || !user.isActive) {
       res.status(401).json({ message: 'Unauthorized' })
@@ -24,10 +24,21 @@ export const me = async (req: AuthRequest, res: Response): Promise<void> => {
         id: user._id.toString(),
         email: user.email,
         role: user.role,
-        avatar: user.profile.avatar
+        profile: {
+          avatar: user.profile?.avatar,
+          displayName: user.profile?.displayName,
+          username: user.profile?.username,
+          aboutMe: user.profile?.aboutMe,
+          instagram: user.profile?.instagram,
+          messenger: user.profile?.messenger,
+          facebook: user.profile?.facebook,
+          phoneNumber: user.profile?.phoneNumber,
+          zaloNumber: user.profile?.zaloNumber,
+          viberNumber: user.profile?.viberNumber
+        }
       }
     })
-  } catch {
+  } catch (error) {
     res.status(500).json({ message: 'Lỗi máy chủ.' })
   }
 }
