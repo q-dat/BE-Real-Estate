@@ -6,7 +6,7 @@ export interface IRentalPriceUnit extends Document {
   description?: string
 }
 
-const RentalPriceUnitSchema = new Schema<IRentalPriceUnit>(
+const RentalPriceUnitSchema: Schema = new Schema<IRentalPriceUnit>(
   {
     displayName: { type: String, required: true },
     description: { type: String }

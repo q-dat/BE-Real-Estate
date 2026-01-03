@@ -8,7 +8,7 @@ export interface IInteriorCategory extends Document {
   updatedAt: Date
 }
 
-const InteriorCategorySchema: Schema = new Schema(
+const InteriorCategorySchema: Schema = new Schema<IInteriorCategory>(
   {
     name: { type: String, required: true, unique: true, trim: true },
     categoryCode: { type: Number },

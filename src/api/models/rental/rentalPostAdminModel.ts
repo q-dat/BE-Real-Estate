@@ -45,7 +45,7 @@ export interface IRentalPostAdmin extends Document {
   updatedAt: string // ngày cập nhật gần nhất
 }
 
-const RentalPostSchema: Schema = new Schema(
+const RentalPostSchema: Schema = new Schema<IRentalPostAdmin>(
   {
     code: { type: String, required: true, unique: true, trim: true },
     images: { type: [String], default: [] },

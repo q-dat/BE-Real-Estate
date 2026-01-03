@@ -12,7 +12,7 @@ export interface IInterior extends Document {
   content?: string
 }
 
-const InteriorSchema: Schema = new Schema(
+const InteriorSchema: Schema = new Schema<IInterior>(
   {
     name: { type: String, required: true, unique: true },
     category: { type: Schema.Types.ObjectId, ref: 'InteriorCategoryModel', required: true },

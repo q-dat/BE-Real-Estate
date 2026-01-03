@@ -27,7 +27,7 @@ export interface IRealEstateProject extends Document {
   createdAt?: string
   updatedAt?: string
 }
-const RealEstateProjectSchema: Schema = new Schema(
+const RealEstateProjectSchema: Schema = new Schema<IRealEstateProject>(
   {
     name: { type: String, required: true },
     images: { type: String, required: true },

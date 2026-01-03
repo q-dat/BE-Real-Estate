@@ -40,7 +40,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         id: user._id,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
+        avatar: user.profile.avatar,
         token
       }
     })

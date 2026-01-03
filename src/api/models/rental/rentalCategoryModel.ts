@@ -9,7 +9,7 @@ export interface IRentalCategory extends Document {
   updatedAt: string // ngày cập nhật danh mục
 }
 
-const RentalCategorySchema: Schema = new Schema(
+const RentalCategorySchema: Schema = new Schema<IRentalCategory>(
   {
     name: { type: String, required: true, unique: true, trim: true },
     categoryCode: { type: Number, required: true, unique: true },

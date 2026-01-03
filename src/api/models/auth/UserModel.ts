@@ -42,18 +42,26 @@ export interface IUser extends Document {
   updatedAt: string
 }
 
-const UserSchema = new Schema(
+const UserSchema = new Schema<IUser>(
   {
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     password: { type: String, required: true, select: false },
 
-    avatar: String,
-    phoneNumber: String,
-    zaloNumber: String,
+    profile: {
+      avatar: String,
+      displayName: { type: String, trim: true },
+      username: { type: String, trim: true, index: true },
+      aboutMe: { type: String, trim: true },
+      instagram: String,
+      messenger: String,
+      facebook: String,
+      phoneNumber: String,
+      zaloNumber: String,
+      viberNumber: String
+    },
 
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
     isActive: { type: Boolean, default: true },
-
     emailVerified: { type: Boolean, default: false },
 
     emailVerifyOtp: { type: String, select: false },

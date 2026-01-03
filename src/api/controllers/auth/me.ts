@@ -24,7 +24,7 @@ export const me = async (req: AuthRequest, res: Response): Promise<void> => {
         id: user._id.toString(),
         email: user.email,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.profile.avatar
       }
     })
   } catch {
