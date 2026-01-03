@@ -4,10 +4,19 @@ export interface IUser extends Document {
   _id: string
   email: string
   password: string
-  avatar?: string
 
-  phoneNumber?: string
-  zaloNumber?: string
+  profile: {
+    avatar?: string
+    displayName?: string
+    username?: string
+    aboutMe?: string
+    instagram?: string
+    messenger?: string
+    facebook?: string
+    viberNumber?: string
+    phoneNumber?: string
+    zaloNumber?: string
+  }
 
   role: 'admin' | 'user'
   isActive: boolean
