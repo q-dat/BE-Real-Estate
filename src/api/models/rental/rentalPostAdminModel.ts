@@ -4,7 +4,7 @@ import { IUser } from '../auth/UserModel'
 
 export interface IRentalPostAdmin extends Document {
   _id: string // id bài đăng (ObjectId)
-  code: string // mã bài đăng ngắn (vd: "POST-17234")
+  code: string // mã bài đăng ngắn (vd: "POST-12345")
   images: string[] // danh sách ảnh
   phoneNumbers?: string // số điện thoại
   zaloLink?: string // link Zalo liên hệ

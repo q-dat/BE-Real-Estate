@@ -12,6 +12,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       catalogID,
       categoryCode,
       title,
+      code,
 
       price,
       priceFrom,
@@ -49,7 +50,9 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
-
+    if (code) {
+      filters.code = { $regex: String(code), $options: 'i' }
+    }
     /* ---------- Price ---------- */
     if (priceFrom || priceTo) {
       filters.price = {
@@ -161,7 +164,8 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  * title?: string
  *   - Tìm theo tiêu đề bài đăng
  *   - Search không phân biệt hoa thường
- *
+ * code: string
+ *   - Tìm mã bài đăng
  *
  * 2. DANH MỤC / CATEGORY
  * ------------------------------------------------
