@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import UserModel from '~/api/models/auth/UserModel'
+import { createOtp } from '../owner/createOtp'
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body
@@ -11,17 +12,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     return
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString()
-  const hashedOtp = await bcrypt.hash(otp, 10)
-
-  await UserModel.create({
+  const user = await UserModel.create({
     email,
-    password: await bcrypt.hash(password, 10),
-    emailVerifyOtp: hashedOtp,
-    emailVerifyOtpExpiresAt: new Date(Date.now() + 10 * 60 * 1000)
+    password: await bcrypt.hash(password, 10)
+  })
+
+  const otp = await createOtp({
+    userId: user._id.toString(),
+    email,
+    type: 'verify_email',
+    ttlMinutes: 2
   })
 
   console.log('VERIFY OTP:', otp)
 
-  res.json({ message: 'Đăng ký thành công. Vui lòng xác thực email.' })
+  res.status(201).json({ message: 'Đăng ký thành công. Vui lòng xác thực email.' })
 }

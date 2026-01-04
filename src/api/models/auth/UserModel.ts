@@ -18,7 +18,7 @@ export interface IUser extends Document {
     zaloNumber?: string
   }
 
-  role: 'admin' | 'user'
+  role: 'admin' | 'user' | 'owner'
   isActive: boolean
 
   emailVerified: boolean
@@ -60,7 +60,15 @@ const UserSchema = new Schema<IUser>(
       viberNumber: String
     },
 
-    role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    role: {
+      type: String,
+      role: {
+        type: String,
+        enum: ['user', 'admin', 'owner'],
+        default: 'user',
+        index: true
+      }
+    },
     isActive: { type: Boolean, default: true },
     emailVerified: { type: Boolean, default: false },
 

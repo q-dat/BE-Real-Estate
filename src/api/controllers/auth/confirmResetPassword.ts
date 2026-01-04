@@ -1,34 +1,42 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import UserModel from '~/api/models/auth/UserModel'
+import UserOtpModel from '~/api/models/owner/UserOtpModel'
 
 export const confirmResetPassword = async (req: Request, res: Response): Promise<void> => {
   const { email, otp, newPassword } = req.body
 
-  const user = await UserModel.findOne({ email }).select('+resetPasswordOtp +resetPasswordOtpExpiresAt +password')
+  const otpRecord = await UserOtpModel.findOne({ email, type: 'reset_password', isUsed: false }).select('+otpHash')
 
-  if (!user || !user.resetPasswordOtp) {
+  if (!otpRecord) {
     res.status(400).json({ message: 'OTP không hợp lệ.' })
     return
   }
 
-  if (user.resetPasswordOtpExpiresAt! < new Date()) {
+  if (otpRecord.expiresAt < new Date()) {
     res.status(400).json({ message: 'OTP đã hết hạn.' })
     return
   }
 
-  const isMatch = await bcrypt.compare(otp, user.resetPasswordOtp)
+  const isMatch = await bcrypt.compare(otp, otpRecord.otpHash)
   if (!isMatch) {
+    otpRecord.attempts++
+    await otpRecord.save()
+
     res.status(400).json({ message: 'OTP không đúng.' })
     return
   }
 
-  user.password = await bcrypt.hash(newPassword, 10)
-  user.resetPasswordOtp = undefined
-  user.resetPasswordOtpExpiresAt = undefined
-  user.passwordChangedAt = new Date()
+  await UserModel.updateOne(
+    { email },
+    {
+      password: await bcrypt.hash(newPassword, 10),
+      passwordChangedAt: new Date()
+    }
+  )
 
-  await user.save()
+  otpRecord.isUsed = true
+  await otpRecord.save()
 
   res.json({ message: 'Đặt lại mật khẩu thành công.' })
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import bcrypt from 'bcrypt'
 import UserModel from '~/api/models/auth/UserModel'
+import { createOtp } from '../owner/createOtp'
 
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
   const { email } = req.body
@@ -11,13 +11,13 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     return
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString()
-  user.resetPasswordOtp = await bcrypt.hash(otp, 10)
-  user.resetPasswordOtpExpiresAt = new Date(Date.now() + 10 * 60 * 1000)
-
-  await user.save()
+  const otp = await createOtp({
+    userId: user._id.toString(),
+    email,
+    type: 'reset_password'
+  })
 
   console.log('RESET OTP:', otp)
 
-  res.json({ message: 'OTP đặt lại mật khẩu đã gửi.' })
+  res.status(200).json({ message: 'OTP đặt lại mật khẩu đã gửi.' })
 }
