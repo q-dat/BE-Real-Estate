@@ -7,7 +7,7 @@ export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction
     return
   }
 
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'owner') {
     res.status(403).json({ message: 'Forbidden: Admin only' })
     return
   }
