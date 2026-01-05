@@ -120,6 +120,11 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
     if (categoryCode) {
       categoryMatch['category.categoryCode'] = Number(categoryCode)
     }
+    
+    const matchStage: Record<string, unknown> = {
+      ...filters,
+      ...(Object.keys(categoryMatch).length > 0 ? categoryMatch : {})
+    }
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
       {
@@ -131,7 +136,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
         }
       },
       { $unwind: '$category' },
-      { $match: filters },
+      { $match: matchStage },
       { $sort: { createdAt: -1 } }
     ])
 
