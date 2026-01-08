@@ -10,7 +10,7 @@ export const getRentalPostAdminById = async (req: Request, res: Response): Promi
       })
       .populate({
         path: 'author',
-        select: '_id email role avatar phoneNumber zaloNumber'
+        select: '-__v -createdAt -updatedAt -role -isActive -emailVerified -lastLoginAt -passwordChangedAt'
       })
       .lean()
 
