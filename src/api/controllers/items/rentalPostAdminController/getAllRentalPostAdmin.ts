@@ -46,14 +46,14 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
 
     const filters: Record<string, unknown> = {}
 
-    /* ---------- Text search ---------- */
+    /* Text search */
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
     if (code) {
       filters.code = { $regex: String(code), $options: 'i' }
     }
-    /* ---------- Price ---------- */
+    /* Price */
     if (priceFrom || priceTo) {
       filters.price = {
         ...(priceFrom && { $gte: Number(priceFrom) }),
@@ -63,7 +63,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.price = { $lte: Number(price) }
     }
 
-    /* ---------- Area ---------- */
+    /* Area */
     if (areaFrom || areaTo) {
       filters.area = {
         ...(areaFrom && { $gte: Number(areaFrom) }),
@@ -73,7 +73,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.area = { $gte: Number(area) }
     }
 
-    /* ---------- Price per m2 ---------- */
+    /* Price per m2 */
     if (pricePerM2From || pricePerM2To) {
       filters.pricePerM2 = {
         ...(pricePerM2From && { $gte: Number(pricePerM2From) }),
@@ -81,7 +81,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       }
     }
 
-    /* ---------- Location ---------- */
+    /* Location */
     if (province) {
       filters.province = { $regex: String(province), $options: 'i' }
     }
@@ -97,7 +97,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.ward = { $regex: String(ward), $options: 'i' }
     }
 
-    /* ---------- Property attributes ---------- */
+    /* Property attributes */
     if (propertyType) filters.propertyType = propertyType
     if (locationType) filters.locationType = locationType
     if (direction) filters.direction = direction
@@ -108,12 +108,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     if (toiletNumber) filters.toiletNumber = Number(toiletNumber)
     if (floorNumber) filters.floorNumber = Number(floorNumber)
 
-    /* ---------- Post meta ---------- */
+    /* Post meta */
     if (postType) filters.postType = postType
     if (status) filters.status = status
     if (author) filters.author = author
 
-    /* ---------- Category match ---------- */
+    /* Category match */
     const categoryMatch: Record<string, unknown> = {}
 
     if (catalogID) {
@@ -125,6 +125,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
+      /* CATEGORY */
       {
         $lookup: {
           from: 'rental-categories',
@@ -134,8 +135,45 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
         }
       },
       { $unwind: '$category' },
+
+      /* AUTHOR */
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author'
+        }
+      },
+      {
+        $unwind: {
+          path: '$author',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+
+      /* FILTER */
       { $match: categoryMatch },
-      { $match: filters }
+      { $match: filters },
+
+      /* CLEAN OUTPUT */
+      {
+        $project: {
+          'author.password': 0,
+          'author.__v': 0,
+          'author.createdAt': 0,
+          'author.updatedAt': 0,
+          'author.role': 0,
+          'author.isActive': 0,
+          'author.emailVerified': 0,
+          'author.lastLoginAt': 0,
+          'author.passwordChangedAt': 0,
+          'author.emailVerifyOtpAttempts': 0,
+          'author.resetPasswordOtpAttempts': 0,
+          'author.failedLoginAttempts': 0,
+          __v: 0
+        }
+      }
     ])
 
     const count = await RentalPostAdminModel.countDocuments(filters)
@@ -160,7 +198,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  * ================================
  *
  * 1. TÌM KIẾM CƠ BẢN
- * ------------------------------------------------
+ *--------------------------------------
  * title?: string
  *   - Tìm theo tiêu đề bài đăng
  *   - Search không phân biệt hoa thường
@@ -168,7 +206,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *   - Tìm mã bài đăng
  *
  * 2. DANH MỤC / CATEGORY
- * ------------------------------------------------
+ *--------------------------------------
  * catalogID?: string
  *   - ObjectId của danh mục cha
  *
@@ -177,7 +215,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 3. GIÁ (VNĐ)
- * ------------------------------------------------
+ *--------------------------------------
  * price?: number
  *   - Lọc bài có giá <= price
  *
@@ -189,7 +227,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 4. DIỆN TÍCH (m2)
- * ------------------------------------------------
+ *--------------------------------------
  * area?: number
  *   - Diện tích >= area
  *
@@ -201,7 +239,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 5. GIÁ TRÊN M2
- * ------------------------------------------------
+ *--------------------------------------
  * pricePerM2From?: number
  *   - Giá / m2 tối thiểu
  *
@@ -210,7 +248,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 6. VỊ TRÍ ĐỊA LÝ
- * ------------------------------------------------
+ *--------------------------------------
  * province?: string
  *   - Tỉnh / Thành phố
  *
@@ -223,7 +261,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 7. LOẠI HÌNH BẤT ĐỘNG SẢN
- * ------------------------------------------------
+ *--------------------------------------
  * propertyType?: string
  *   - Ví dụ:
  *     - "Căn hộ"
@@ -237,7 +275,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 8. THUỘC TÍNH NHÀ ĐẤT
- * ------------------------------------------------
+ *--------------------------------------
  * direction?: string
  *   - Hướng nhà (Đông, Tây, Nam, Bắc...)
  *
@@ -251,7 +289,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 9. SỐ LƯỢNG PHÒNG
- * ------------------------------------------------
+ *--------------------------------------
  * bedroomNumber?: number
  *   - Số phòng ngủ
  *
@@ -263,7 +301,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 10. TRẠNG THÁI BÀI ĐĂNG
- * ------------------------------------------------
+ *--------------------------------------
  * postType?: 'basic' | 'vip1' | 'vip2' | 'vip3' | 'highlight'
  *   - Loại tin đăng
  *
@@ -272,19 +310,19 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
  *
  *
  * 11. NGƯỜI ĐĂNG
- * ------------------------------------------------
+ *--------------------------------------
  * author?: string
  *   - Người tạo bài đăng
  *
  *
  * 12. KẾT HỢP FILTER
- * ------------------------------------------------
+ *--------------------------------------
  * - Có thể kết hợp nhiều query cùng lúc
  * - Các filter dạng range sẽ ưu tiên hơn filter đơn lẻ
  *
  *
  * 13. VÍ DỤ REQUEST
- * ------------------------------------------------
+ *--------------------------------------
  * /admin/rental-posts?
  *   province=Hồ Chí Minh&
  *   district=Quận 7&
