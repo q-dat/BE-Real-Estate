@@ -6,8 +6,6 @@ export interface IRentalPostAdmin extends Document {
   _id: string // id bài đăng (ObjectId)
   code: string // mã bài đăng ngắn (vd: "POST-12345")
   images: string[] // danh sách ảnh
-  phoneNumbers?: string // số điện thoại
-  zaloLink?: string // link Zalo liên hệ
   title: string // tiêu đề bài đăng
   description: string // mô tả chi tiết nội dung bài đăng
   category: IRentalCategory // danh mục (liên kết đến bảng danh mục)
@@ -49,8 +47,6 @@ const RentalPostSchema: Schema = new Schema<IRentalPostAdmin>(
   {
     code: { type: String, required: true, unique: true, trim: true },
     images: { type: [String], default: [] },
-    phoneNumbers: { type: String },
-    zaloLink: { type: String },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     category: { type: Schema.Types.ObjectId, ref: 'RentalCategoryModel', required: true },

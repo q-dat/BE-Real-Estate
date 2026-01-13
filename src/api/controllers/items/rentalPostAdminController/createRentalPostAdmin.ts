@@ -5,8 +5,6 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 export const createRentalPostAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
-      phoneNumbers,
-      zaloLink,
       title,
       description,
       category,
@@ -56,8 +54,6 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     const tempPost = new RentalPostAdminModel({
       images: imageUrls,
       adminImages: adminImagesUrls,
-      phoneNumbers,
-      zaloLink,
       title,
       description,
       category,
