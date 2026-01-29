@@ -11,7 +11,7 @@ export interface IPostCategory extends Document {
 const PostCategorySchema = new Schema<IPostCategory>(
   {
     name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, lowercase: true },
+    slug: { type: String, lowercase: true },
     description: { type: String }
   },
   { timestamps: true, collection: 'post-categories' }
