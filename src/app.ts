@@ -19,6 +19,8 @@ import interiorRoutes from './api/routes/InteriorRoutes'
 import interiorCategoryRoutes from './api/routes/interiorCategoryRoutes'
 import realEstateProjectRoutes from './api/routes/realEstateProjectRoutes'
 import authRoutes from './api/routes/authRoutes'
+import postRoutes from './api/routes/postRoutes'
+import postCategoryRoutes from './api/routes/postCategoryRoutes'
 
 // Environment setup
 dotenv.config()
@@ -78,6 +80,8 @@ app.use('/api/', interiorRoutes)
 app.use('/api/', interiorCategoryRoutes)
 app.use('/api/', realEstateProjectRoutes)
 app.use('/api/auth/', authRoutes)
+app.use('/api/', postRoutes)
+app.use('/api/', postCategoryRoutes)
 
 // EJS setup
 app.set('view engine', 'ejs')
