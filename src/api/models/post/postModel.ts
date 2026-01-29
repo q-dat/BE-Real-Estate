@@ -1,6 +1,7 @@
 import { Schema, model, Types, Document } from 'mongoose'
 
 export interface IPost extends Document {
+  image?: string
   title: string
   slug?: string
   content: string
@@ -12,6 +13,7 @@ export interface IPost extends Document {
 
 const PostSchema = new Schema<IPost>(
   {
+    image: { type: String },
     title: { type: String, required: true, trim: true },
     slug: { type: String, required: true, lowercase: true },
     content: { type: String, required: true },

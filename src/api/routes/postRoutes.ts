@@ -4,12 +4,13 @@ import { getPosts } from '../controllers/post/getAllPost'
 import { getPostDetail } from '../controllers/post/getPostById'
 import { updatePost } from '../controllers/post/updatePost'
 import { deletePost } from '../controllers/post/deletePost'
+import uploadCloud from '~/config/cloudinary'
 
 const postRoutes = Router()
 
 postRoutes.get('/posts', getPosts)
 postRoutes.get('/post/:slug', getPostDetail)
-postRoutes.post('/post', createPost)
+postRoutes.post('/post', uploadCloud.fields([{ name: 'image', maxCount: 1 }]), createPost)
 postRoutes.put('/post/:id', updatePost)
 postRoutes.delete('/post/:id', deletePost)
 

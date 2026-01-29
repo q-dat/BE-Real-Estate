@@ -63,6 +63,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "prerender-node": "^3.8.0",
     "sitemap": "^8.0.0",
+    "slugify": "^1.6.6",
     "socket.io": "^4.8.1"
   }
 }
