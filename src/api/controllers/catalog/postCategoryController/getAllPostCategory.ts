@@ -12,7 +12,10 @@ export const getAllPostCategory = async (_req: Request, res: Response) => {
       visibleCount: postCategories.length,
       postCategories
     })
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi máy chủ', error })
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Lỗi máy chủ',
+      error: error.message
+    })
   }
 }
