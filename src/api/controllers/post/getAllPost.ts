@@ -5,19 +5,24 @@ export const getPosts = async (req: Request, res: Response) => {
   try {
     const { catalog, published } = req.query
 
-    const filter: Record<string, unknown> = {}
-    if (catalog) filter.catalog = catalog
-    if (published !== undefined) filter.published = published === 'true'
+    const filters: Record<string, unknown> = {}
 
-    const posts = await PostModel.find(filter).populate('catalog', 'name slug').sort({ createdAt: -1 }).lean()
+    if (catalog) filters.catalog = catalog
+    if (published !== undefined) filters.published = published === 'true'
+
+    const posts = await PostModel.find(filters).populate('catalog', '-createdAt -updatedAt -__v').sort({ createdAt: -1 }).lean()
+    const count = await PostModel.countDocuments(filters)
 
     res.status(200).json({
       message: posts.length ? 'Lấy danh sách bài viết thành công' : 'Không có bài viết phù hợp',
-      count: posts.length,
+      count,
       visibleCount: posts.length,
       posts
     })
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi máy chủ', error })
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Lỗi máy chủ',
+      error: error.message
+    })
   }
 }

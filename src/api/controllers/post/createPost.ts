@@ -1,30 +1,21 @@
 import { Request, Response } from 'express'
-import { PostModel } from '~/api/models/post/postModel'
+import { IPost, PostModel } from '~/api/models/post/postModel'
 import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 import slugify from 'slugify'
 
-interface CreatePostBody {
-  title: string
-  content: string
-  catalog: string
-  published?: boolean
-}
-
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, content, catalog, published = false } = req.body as CreatePostBody
+    const { title, content, catalog, published = false } = req.body as IPost
 
-    if (!title || !content || !catalog) {
-      res.status(400).json({ message: 'Thiếu dữ liệu bắt buộc.' })
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] }
+    const avatarUrl = files?.['image']?.[0]
+
+    if (!avatarUrl) {
+      res.status(400).json({ message: 'Hình ảnh là bắt buộc.' })
       return
     }
 
-    let avatarUrl: string | undefined
-
-    const file = req.file
-    if (file) {
-      avatarUrl = await uploadImageToCloudinary(file.path)
-    }
+    const imageUrl = await uploadImageToCloudinary(avatarUrl.path)
 
     const slug = slugify(title, {
       lower: true,
@@ -38,8 +29,8 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
       return
     }
 
-    const post = await PostModel.create({
-      image: avatarUrl,
+    const post = new PostModel({
+      image: imageUrl,
       title,
       slug,
       content,
@@ -47,13 +38,13 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
       published
     })
 
+    const saved = await post.save()
+
     res.status(201).json({
       message: 'Tạo bài viết thành công!',
-      data: post
+      data: saved
     })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Lỗi máy chủ.'
-    })
+  } catch (error: any) {
+    res.status(500).json({ message: 'Lỗi máy chủ!', error: error.message })
   }
 }

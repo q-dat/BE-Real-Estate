@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
+import RentalPostAdminModel, { IRentalPostAdmin } from '~/api/models/rental/rentalPostAdminModel'
 import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 
 export const createRentalPostAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -37,7 +37,7 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       adminNote,
       postedAt,
       expiredAt
-    } = req.body
+    } = req.body as IRentalPostAdmin
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const imageFiles = files?.['images'] || []
@@ -51,7 +51,7 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     const imageUrls = await Promise.all(imageFiles.map((f) => uploadImageToCloudinary(f.path)))
     const adminImagesUrls = await Promise.all(adminImagesFiles.map((f) => uploadImageToCloudinary(f.path)))
 
-    const tempPost = new RentalPostAdminModel({
+    const post = new RentalPostAdminModel({
       images: imageUrls,
       adminImages: adminImagesUrls,
       title,
@@ -89,9 +89,9 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
     })
 
     // Sinh code từ 7 ký tự cuối của _id
-    tempPost.code = tempPost._id.toString().slice(-7).toUpperCase()
+    post.code = post._id.toString().slice(-7).toUpperCase()
 
-    const saved = await tempPost.save()
+    const saved = await post.save()
 
     res.status(201).json({
       message: 'Tạo bài đăng thành công!',
