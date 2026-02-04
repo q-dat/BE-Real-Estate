@@ -5,7 +5,7 @@ import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
 export const updatePost = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
-    const { title, content, catalog, published } = req.body
+    const { title, content, source, catalog, published } = req.body
 
     // Lấy file upload (nếu có)
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
@@ -15,6 +15,7 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     const updateData: Partial<{
       title: string
       content: string
+      source: string
       catalog: string
       published: boolean
       image: string
@@ -22,6 +23,7 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     }> = {
       title,
       content,
+      source,
       catalog,
       published
     }
@@ -36,7 +38,7 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     if (title) {
       updateData.slug = title
         ? require('slugify')(title, {
-            lower: true,  
+            lower: true,
             strict: true,
             trim: true
           })

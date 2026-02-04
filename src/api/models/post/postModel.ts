@@ -5,6 +5,7 @@ export interface IPost extends Document {
   title: string
   slug?: string
   content: string
+  source?: string
   catalog: Types.ObjectId
   published: boolean
   createdAt: Date
@@ -17,6 +18,7 @@ const PostSchema = new Schema<IPost>(
     title: { type: String, required: true, trim: true },
     slug: { type: String, lowercase: true },
     content: { type: String, required: true },
+    source: { type: String },
     catalog: { type: Schema.Types.ObjectId, ref: 'PostCategoryModel', required: true },
     published: { type: Boolean, default: false }
   },

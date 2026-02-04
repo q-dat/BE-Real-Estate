@@ -5,7 +5,7 @@ import slugify from 'slugify'
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, content, catalog, published = false } = req.body as IPost
+    const { title, content, source, catalog, published = false } = req.body as IPost
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     const avatarUrl = files?.['image']?.[0]
@@ -34,6 +34,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
       title,
       slug,
       content,
+      source,
       catalog,
       published
     })
