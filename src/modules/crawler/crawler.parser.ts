@@ -17,28 +17,51 @@ export function parseArticle(
   title = title.replace(/\s+/g, ' ').trim()
 
   /* ---------- CONTENT ---------- */
-  const contentParts = $(config.selectors.content)
-    .map((_, el) => {
-      const text = $(el).clone().find('script, style, iframe, ads, .ads, .advertisement').remove().end().text().replace(/\s+/g, ' ').trim()
+  const contentNode = $(config.selectors.content).first().clone()
 
-      return text
-    })
-    .get()
-    .filter((text) => text.length > 40)
+  contentNode
+    .find(
+      [
+        'script',
+        'style',
+        'iframe',
+        'ins',
+        '.ads',
+        '.advertisement',
+        '.related',
+        '.social',
+        'article.ck-cms-wiki-news-full',
+        'article[data-vnnembedtype="article"]'
+      ].join(',')
+    )
+    .remove()
 
-  const content = contentParts.join('\n\n')
+  contentNode.find('img').each((_, img) => {
+    const $img = $(img)
 
-  /* ---------- IMAGE ---------- */
-  let image: string | undefined
+    const realSrc = $img.attr('data-original') || $img.attr('data-src') || $img.attr('data-lazy-src') || $img.attr('data-srcset')?.split(' ')[0]
 
-  if (config.selectors.image) {
-    const img = $(config.selectors.image).first()
-
-    image = img.attr('data-src') || img.attr('data-original') || img.attr('src') || undefined
-
-    if (image && image.startsWith('/')) {
-      image = `https://${config.domain}${image}`
+    if (realSrc) {
+      $img.attr('src', realSrc)
     }
+
+    // cleanup rác
+    $img.removeAttr('data-original')
+    $img.removeAttr('data-src')
+    $img.removeAttr('data-lazy-src')
+    $img.removeAttr('data-srcset')
+    $img.removeAttr('class')
+  })
+
+  const content = contentNode.html()?.trim() || ''
+
+  /* ---------- IMAGE ĐẠI DIỆN ---------- */
+  let image: string | undefined
+  const firstImg = contentNode.find('img[src^="http"]').first()
+  image = firstImg.attr('src')
+
+  if (firstImg.length) {
+    image = firstImg.attr('src')
   }
 
   return {

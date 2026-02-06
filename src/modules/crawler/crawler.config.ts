@@ -18,7 +18,7 @@ export const CRAWL_DOMAINS: CrawlDomainConfig[] = [
     selectors: {
       articleLinks: 'h3.article-title a',
       title: 'h1',
-      content: '.singular-content p',
+      content: '.singular-content',
       image: '.singular-content img'
     },
     sourceName: 'DanTri',
@@ -30,7 +30,7 @@ export const CRAWL_DOMAINS: CrawlDomainConfig[] = [
     selectors: {
       articleLinks: 'h3.title a',
       title: 'h1',
-      content: '.content-detail p',
+      content: '.content-detail',
       image: '.content-detail img'
     },
     sourceName: 'CafeLand',
@@ -43,7 +43,7 @@ export const CRAWL_DOMAINS: CrawlDomainConfig[] = [
     selectors: {
       articleLinks: '.re__title a',
       title: 'h1',
-      content: '.re__content p',
+      content: '.re__content',
       image: '.re__content img'
     },
     sourceName: 'BatDongSan',
@@ -56,7 +56,7 @@ export const CRAWL_DOMAINS: CrawlDomainConfig[] = [
     selectors: {
       articleLinks: 'h3 a',
       title: 'h1',
-      content: '.maincontent p',
+      content: '.maincontent',
       image: '.maincontent img'
     },
     sourceName: 'VietnamNet',
@@ -69,7 +69,7 @@ export const CRAWL_DOMAINS: CrawlDomainConfig[] = [
     selectors: {
       articleLinks: 'h3.story__title a',
       title: 'h1',
-      content: '.detail__content p',
+      content: '.detail__content',
       image: '.detail__content img'
     },
     sourceName: 'VnEconomy',

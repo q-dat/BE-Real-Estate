@@ -18,12 +18,12 @@ export class PostService {
   }
 
   static async createFromCrawler(input: CreateFromCrawlerInput) {
-    /** 1. Validate tối thiểu */
+    /** Validate tối thiểu */
     if (!input.title || !input.content || !input.catalogSlug) {
       throw new Error('Invalid crawler payload')
     }
 
-    /** 2. Slug bài viết */
+    /** Slug bài viết */
     const slug = slugify(input.title, {
       lower: true,
       strict: true,
@@ -36,7 +36,7 @@ export class PostService {
       return null
     }
 
-    /** 3. Find or create category (QUAN TRỌNG) */
+    /** Find or create category */
     let category = await PostCategoryModel.findOne({
       slug: input.catalogSlug
     })
@@ -62,7 +62,7 @@ export class PostService {
       throw new Error('Cannot resolve post category')
     }
 
-    /** 4. Tạo bài viết */
+    /** Tạo bài viết */
     const post = new PostModel({
       title: input.title,
       slug,
