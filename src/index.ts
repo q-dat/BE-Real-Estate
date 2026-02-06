@@ -1,5 +1,5 @@
 import app from './app'
-import { startCrawl } from '~/src/modules/crawler/crawler.service'
+import { startCrawl } from '~/modules/crawler/crawler.service'
 
 const PORT = process.env.PORT
 
