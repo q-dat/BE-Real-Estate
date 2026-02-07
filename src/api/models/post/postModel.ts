@@ -20,7 +20,7 @@ const PostSchema = new Schema<IPost>(
     content: { type: String, required: true },
     source: { type: String },
     catalog: { type: Schema.Types.ObjectId, ref: 'PostCategoryModel', required: true },
-    published: { type: Boolean, default: false }
+    published: { type: Boolean, default: true }
   },
   { timestamps: true }
 )
