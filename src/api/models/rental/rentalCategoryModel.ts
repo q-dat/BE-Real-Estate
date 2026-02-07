@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IRentalCategory extends Document {
-  _id: string // id danh mục (ObjectId)
   name: string // tên hiển thị (vd: "Cho thuê căn hộ")
   categoryCode: number // mã danh mục (vd: 1, 2, 3...)
   description?: string // mô tả danh mục

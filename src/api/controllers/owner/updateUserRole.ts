@@ -1,11 +1,14 @@
 import { Request, Response } from 'express'
-import mongoose from 'mongoose'
+import { Types } from 'mongoose'
 import UserModel from '~/api/models/auth/UserModel'
 
 const ALLOWED_ROLES = ['user', 'admin', 'owner'] as const
 type UserRole = (typeof ALLOWED_ROLES)[number]
+type Params = {
+  id: string
+}
 
-export const updateUserRole = async (req: Request, res: Response): Promise<void> => {
+export const updateUserRole = async (req: Request<Params>, res: Response): Promise<void> => {
   try {
     const { id } = req.params
     const { role } = req.body as { role?: UserRole }
@@ -15,7 +18,7 @@ export const updateUserRole = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: 'User ID không hợp lệ.' })
       return
     }

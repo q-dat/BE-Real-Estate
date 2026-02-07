@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IRealEstateProject extends Document {
-  _id: string
   name: string // Tên dự án
   images: string
   thumbnails?: string[]

@@ -1,8 +1,11 @@
 import { Request, Response } from 'express'
-import mongoose from 'mongoose'
+import { Types } from 'mongoose'
 import UserModel from '~/api/models/auth/UserModel'
 
-export const updateUserActive = async (req: Request, res: Response): Promise<void> => {
+type Params = {
+  id: string
+}
+export const updateUserActive = async (req: Request<Params>, res: Response): Promise<void> => {
   try {
     const { id } = req.params
     const { isActive } = req.body as { isActive?: boolean }
@@ -12,11 +15,10 @@ export const updateUserActive = async (req: Request, res: Response): Promise<voi
       return
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: 'User ID không hợp lệ.' })
       return
     }
-    
 
     const user = await UserModel.findById(id).select('email isActive')
     if (!user) {

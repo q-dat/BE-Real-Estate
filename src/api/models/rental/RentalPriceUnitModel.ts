@@ -1,7 +1,6 @@
 import { Document, Schema, model } from 'mongoose'
 
 export interface IRentalPriceUnit extends Document {
-  _id: string
   displayName: string
   description?: string
 }

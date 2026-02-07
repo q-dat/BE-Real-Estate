@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from 'mongoose'
 import { IInteriorCategory } from './interiorCategoryModel'
 
 export interface IInterior extends Document {
-  _id: string
   name: string
   category: IInteriorCategory
   images: string
