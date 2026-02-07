@@ -1,16 +1,24 @@
 declare module 'multer-storage-cloudinary' {
-  import type { StorageEngine } from 'multer'
-  import type { UploadApiOptions } from 'cloudinary'
+  import { StorageEngine } from 'multer'
+  import { v2 as cloudinary } from 'cloudinary'
+  import { Request } from 'express'
 
-  export interface CloudinaryStorageOptions {
-    cloudinary: any
-    params?: UploadApiOptions | ((req: Express.Request, file: Express.Multer.File) => UploadApiOptions)
+  interface CloudinaryStorageParams {
+    folder?: string
+    format?: string | ((req: Request, file: Express.Multer.File) => string | Promise<string>)
+    public_id?: string | ((req: Request, file: Express.Multer.File) => string)
+    resource_type?: 'image' | 'video' | 'raw' | 'auto'
+    transformation?: unknown
+  }
+
+  interface CloudinaryStorageOptions {
+    cloudinary: typeof cloudinary
+    params?: CloudinaryStorageParams
   }
 
   export class CloudinaryStorage implements StorageEngine {
     constructor(options: CloudinaryStorageOptions)
-    _handleFile(req: Express.Request, file: Express.Multer.File, cb: (error?: any, info?: Partial<Express.Multer.File>) => void): void
-
-    _removeFile(req: Express.Request, file: Express.Multer.File, cb: (error: Error | null) => void): void
+    _handleFile(req: Request, file: Express.Multer.File, cb: (error?: unknown, info?: Partial<Express.Multer.File>) => void): void
+    _removeFile(req: Request, file: Express.Multer.File, cb: (error: Error | null) => void): void
   }
 }
