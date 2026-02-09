@@ -48,8 +48,8 @@ export const createRentalPostAdmin = async (req: Request, res: Response): Promis
       return
     }
 
-    const imageUrls = await Promise.all(imageFiles.map((f) => uploadImageToCloudinary(f.path)))
-    const adminImagesUrls = await Promise.all(adminImagesFiles.map((f) => uploadImageToCloudinary(f.path)))
+    const imageUrls = await Promise.all(imageFiles.map((file) => uploadImageToCloudinary(file.buffer)))
+    const adminImagesUrls = await Promise.all(adminImagesFiles.map((file) => uploadImageToCloudinary(file.buffer)))
 
     const post = new RentalPostAdminModel({
       images: imageUrls,

@@ -24,7 +24,7 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
     let avatarUrl: string | undefined
 
     if (avatarFiles.length > 0) {
-      avatarUrl = await uploadImageToCloudinary(avatarFiles[0].path)
+      avatarUrl = await uploadImageToCloudinary(avatarFiles[0].buffer)
     }
 
     const updateProfileData: Record<string, unknown> = {}

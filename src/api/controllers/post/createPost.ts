@@ -15,7 +15,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
       return
     }
 
-    const imageUrl = await uploadImageToCloudinary(avatarUrl.path)
+    const imageUrl = await uploadImageToCloudinary(avatarUrl.buffer)
 
     const slug = slugify(title, {
       lower: true,

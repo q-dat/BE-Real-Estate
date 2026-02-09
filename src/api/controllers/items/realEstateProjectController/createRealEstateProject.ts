@@ -48,10 +48,10 @@ export const createRealEstateProject = async (req: Request, res: Response): Prom
     }
 
     // Upload ảnh chính (chỉ 1 ảnh)
-    const mainImageUrl = await uploadImageToCloudinary(imageFiles[0].path)
+    const mainImageUrl = await uploadImageToCloudinary(imageFiles[0].buffer)
 
     // Upload thumbnails (nếu có)
-    const thumbnailsUrls = await Promise.all(thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path)))
+    const thumbnailsUrls = await Promise.all(thumbnailsFiles.map((file) => uploadImageToCloudinary(file.buffer)))
 
     const project = new RealEstateProjectModel({
       name,

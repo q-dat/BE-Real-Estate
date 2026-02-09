@@ -30,7 +30,7 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
 
     // Nếu có ảnh mới → upload và gán lại
     if (imageFile) {
-      const imageUrl = await uploadImageToCloudinary(imageFile.path)
+      const imageUrl = await uploadImageToCloudinary(imageFile.buffer)
       updateData.image = imageUrl
     }
 

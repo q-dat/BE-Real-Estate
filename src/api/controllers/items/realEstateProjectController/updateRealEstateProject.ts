@@ -60,13 +60,13 @@ export const updateRealEstateProject = async (req: Request, res: Response): Prom
 
     // Nếu có ảnh chính mới → upload
     if (imageFiles.length > 0) {
-      const uploaded = await uploadImageToCloudinary(imageFiles[0].path)
+      const uploaded = await uploadImageToCloudinary(imageFiles[0].buffer)
       updateData.images = uploaded
     }
 
     // Nếu có thumbnails mới → upload
     if (thumbnailsFiles.length > 0) {
-      const uploadedThumbs = await Promise.all(thumbnailsFiles.map((f) => uploadImageToCloudinary(f.path)))
+      const uploadedThumbs = await Promise.all(thumbnailsFiles.map((file) => uploadImageToCloudinary(file.buffer)))
       updateData.thumbnails = uploadedThumbs
     }
 

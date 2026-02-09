@@ -88,13 +88,13 @@ export const updateRentalPostAdmin = async (req: Request, res: Response): Promis
 
     // Nếu có hình ảnh mới, upload và gán lại
     if (imagesFiles.length > 0) {
-      const imageUrls = await Promise.all(imagesFiles.map((file) => uploadImageToCloudinary(file.path)))
+      const imageUrls = await Promise.all(imagesFiles.map((file) => uploadImageToCloudinary(file.buffer)))
       updateData.images = imageUrls
     }
 
     // Nếu có adminImages mới, upload và gán lại
     if (adminImagesFiles.length > 0) {
-      const adminImagesUrls = await Promise.all(adminImagesFiles.map((file) => uploadImageToCloudinary(file.path)))
+      const adminImagesUrls = await Promise.all(adminImagesFiles.map((file) => uploadImageToCloudinary(file.buffer)))
       updateData.adminImages = adminImagesUrls
     }
 
