@@ -21,6 +21,7 @@ import realEstateProjectRoutes from './api/routes/realEstateProjectRoutes'
 import authRoutes from './api/routes/authRoutes'
 import postRoutes from './api/routes/postRoutes'
 import postCategoryRoutes from './api/routes/postCategoryRoutes'
+import crawlerRoutes from './api/routes/crawlerRoutes'
 
 // Environment setup
 dotenv.config()
@@ -82,6 +83,7 @@ app.use('/api/', realEstateProjectRoutes)
 app.use('/api/auth/', authRoutes)
 app.use('/api/', postRoutes)
 app.use('/api/', postCategoryRoutes)
+app.use('/api/', crawlerRoutes)
 
 // EJS setup
 app.set('view engine', 'ejs')
