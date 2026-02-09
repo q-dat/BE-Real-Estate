@@ -18,12 +18,12 @@ export class PostService {
   }
 
   static async createFromCrawler(input: CreateFromCrawlerInput) {
-    /** Validate tối thiểu */
+    /** Kiểm tra dữ liệu đầu vào tối thiểu */
     if (!input.title || !input.content || !input.catalogSlug) {
-      throw new Error('Invalid crawler payload')
+      throw new Error('Dữ liệu crawler không hợp lệ')
     }
 
-    /** Slug bài viết */
+    /** Tạo slug cho bài viết */
     const slug = slugify(input.title, {
       lower: true,
       strict: true,
@@ -32,11 +32,11 @@ export class PostService {
 
     const existedSlug = await PostModel.exists({ slug })
     if (existedSlug) {
-      console.log(`[CRAWLER] Skip existed post: ${slug}`)
+      console.log(`[CRAWLER] Bỏ qua bài viết đã tồn tại theo slug: ${slug}`)
       return null
     }
 
-    /** Find or create category */
+    /** Tìm hoặc tự động tạo danh mục bài viết */
     let category = await PostCategoryModel.findOne({
       slug: input.catalogSlug
     })
@@ -46,12 +46,12 @@ export class PostService {
         category = await PostCategoryModel.create({
           name: input.sourceName || input.catalogSlug,
           slug: input.catalogSlug,
-          description: `Auto created by crawler`
+          description: 'Tự động tạo bởi crawler'
         })
 
-        console.log(`[CRAWLER] Auto created category: ${input.catalogSlug}`)
+        console.log(`[CRAWLER] Đã tự động tạo danh mục: ${input.catalogSlug}`)
       } catch {
-        // chống race-condition khi crawl song song
+        // Tránh race-condition khi crawler chạy song song
         category = await PostCategoryModel.findOne({
           slug: input.catalogSlug
         })
@@ -59,10 +59,10 @@ export class PostService {
     }
 
     if (!category) {
-      throw new Error('Cannot resolve post category')
+      throw new Error('Không thể xác định danh mục bài viết')
     }
 
-    /** Tạo bài viết */
+    /** Tạo bài viết mới */
     const post = new PostModel({
       title: input.title,
       slug,
@@ -73,7 +73,7 @@ export class PostService {
       published: false
     })
 
-    console.log(`[CRAWLER] Saved post: ${input.title}`)
+    console.log(`[CRAWLER] Lưu bài viết thành công: ${input.title}`)
 
     return post.save()
   }

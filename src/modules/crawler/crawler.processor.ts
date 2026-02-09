@@ -8,17 +8,17 @@ export async function processArticle(url: string, domain: CrawlDomainConfig): Pr
   try {
     const existed = await PostService.existsBySource(url)
     if (existed) {
-      console.log(`[CRAWLER] Skip existed: ${url}`)
+      console.log(`[CRAWLER] Bỏ qua bài viết đã tồn tại: ${url}`)
       return
     }
 
-    console.log(`[CRAWLER] Fetch article: ${url}`)
+    console.log(`[CRAWLER] Đang tải nội dung bài viết: ${url}`)
     const html = await fetchHtml(url)
 
     const parsed = parseArticle(html, domain)
 
     if (!parsed.title || !parsed.content) {
-      console.warn(`[CRAWLER] Invalid article data: ${url}`)
+      console.warn(`[CRAWLER] Dữ liệu bài viết không hợp lệ: ${url}`)
       return
     }
 
@@ -31,17 +31,17 @@ export async function processArticle(url: string, domain: CrawlDomainConfig): Pr
       catalogSlug: domain.catalogSlug
     })
 
-    console.log(`[CRAWLER] Saved article: ${parsed.title}`)
+    console.log(`[CRAWLER] Lưu bài viết thành công: ${parsed.title}`)
   } catch (error: any) {
     if (error?.response?.status === 429) {
-      console.warn(`[CRAWLER] 429 Too Many Requests, delay & skip: ${url}`)
+      console.warn(`[CRAWLER] Bị giới hạn truy cập (429), tạm dừng và bỏ qua: ${url}`)
       await sleep(5000)
       return
     }
 
-    console.error(`[CRAWLER] Error processing: ${url}`, error)
+    console.error(`[CRAWLER] Lỗi khi xử lý bài viết: ${url}`, error)
   } finally {
-    // Delay sau mỗi bài – BẮT BUỘC
+    // Delay sau mỗi bài – bắt buộc để tránh bị chặn
     await sleep(1500 + Math.random() * 1500)
   }
 }

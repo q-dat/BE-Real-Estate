@@ -5,21 +5,21 @@ import { CRAWL_DOMAINS } from '~/modules/crawler/crawler.config'
 import { processArticle } from './crawler.processor'
 
 export async function startCrawl(): Promise<void> {
-  console.log('[CRAWLER] Start')
+  console.log('[CRAWLER] Bắt đầu thu thập dữ liệu')
 
   for (const domain of CRAWL_DOMAINS) {
-    console.log(`[CRAWLER] Domain: ${domain.domain}`)
+    console.log(`[CRAWLER] Đang xử lý domain: ${domain.domain}`)
 
     for (const entryUrl of domain.entryUrls) {
-      console.log(`[CRAWLER] Entry URL: ${entryUrl}`)
+      console.log(`[CRAWLER] Truy cập trang đầu vào: ${entryUrl}`)
 
       let html: string
 
       try {
         html = await fetchHtml(entryUrl)
-        console.log(`[CRAWLER] Fetched entry HTML (${html.length} chars)`)
+        console.log(`[CRAWLER] Lấy HTML thành công (${html.length} ký tự)`)
       } catch (error) {
-        console.error('[CRAWLER] Failed to fetch entry URL', error)
+        console.error('[CRAWLER] Không thể lấy HTML từ trang đầu vào', error)
         continue
       }
 
@@ -30,10 +30,10 @@ export async function startCrawl(): Promise<void> {
         .get()
         .filter(Boolean)
 
-      console.log(`[CRAWLER] Found ${links.length} article links`)
+      console.log(`[CRAWLER] Phát hiện ${links.length} liên kết bài viết`)
 
       if (links.length === 0) {
-        console.warn('[CRAWLER] No article links found, check selector')
+        console.warn('[CRAWLER] Không tìm thấy liên kết bài viết, cần kiểm tra selector')
         continue
       }
 
@@ -41,16 +41,16 @@ export async function startCrawl(): Promise<void> {
         const url = link.startsWith('http') ? link : `https://${domain.domain}${link}`
 
         return async () => {
-          console.log(`[ARTICLE] (${index + 1}/${links.length}) ${url}`)
+          console.log(`[BÀI VIẾT] (${index + 1}/${links.length}) Đang xử lý: ${url}`)
           await processArticle(url, domain)
         }
       })
 
-      console.time('[CRAWLER] Process articles')
+      console.time('[CRAWLER] Thời gian xử lý danh sách bài viết')
       await runWithConcurrency(tasks, 5)
-      console.timeEnd('[CRAWLER] Process articles')
+      console.timeEnd('[CRAWLER] Thời gian xử lý danh sách bài viết')
     }
   }
 
-  console.log('[CRAWLER] Done')
+  console.log('[CRAWLER] Hoàn tất thu thập dữ liệu')
 }
