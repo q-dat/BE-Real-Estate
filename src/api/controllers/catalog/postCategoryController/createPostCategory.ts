@@ -14,7 +14,8 @@ export const createPostCategory = async (req: Request, res: Response) => {
     const slug = slugify(name, {
       lower: true,
       strict: true,
-      trim: true
+      trim: true,
+      locale: 'vi'
     })
 
     const existedSlug = await PostCategoryModel.exists({ slug })

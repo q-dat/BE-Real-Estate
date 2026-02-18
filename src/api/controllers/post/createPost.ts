@@ -20,7 +20,8 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
     const slug = slugify(title, {
       lower: true,
       strict: true,
-      trim: true
+      trim: true,
+      locale: 'vi'
     })
 
     const existedSlug = await PostModel.exists({ slug })

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
+import slugify from 'slugify'
 import { PostModel } from '~/api/models/post/postModel'
 import { PostCategoryModel } from '~/api/models/post/postCategoryModel'
-import { slugify } from '~/lib/slugify'
 
 export const createPostFromCrawler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -25,7 +25,7 @@ export const createPostFromCrawler = async (req: Request, res: Response): Promis
       return
     }
 
-    /* Tìm hoặc tạo category */
+    /** 1. Tìm hoặc tạo category */
     let category = await PostCategoryModel.findOne({ slug: catalogSlug })
 
     if (!category) {
@@ -38,8 +38,13 @@ export const createPostFromCrawler = async (req: Request, res: Response): Promis
       console.log(`[CRAWLER] Auto created category: ${catalogSlug}`)
     }
 
-    /* Chống trùng bài */
-    const slug = slugify(title)
+    /** 2. Chống trùng bài */
+    const slug = slugify(title, {
+      lower: true,
+      strict: true,
+      trim: true,
+      locale: 'vi'
+    })
     const existed = await PostModel.exists({ slug })
 
     if (existed) {
@@ -47,7 +52,7 @@ export const createPostFromCrawler = async (req: Request, res: Response): Promis
       return
     }
 
-    /* Tạo bài viết */
+    /** 3. Tạo bài viết */
     const post = await PostModel.create({
       title,
       slug,

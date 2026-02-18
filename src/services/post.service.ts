@@ -27,7 +27,8 @@ export class PostService {
     const slug = slugify(input.title, {
       lower: true,
       strict: true,
-      trim: true
+      trim: true,
+      locale: 'vi'
     })
 
     const existedSlug = await PostModel.exists({ slug })
