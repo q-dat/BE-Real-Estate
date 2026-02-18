@@ -6,11 +6,13 @@ import { updatePost } from '../controllers/post/updatePost'
 import { deletePost } from '../controllers/post/deletePost'
 import uploadCloud from '~/config/cloudinary'
 import { createPostFromCrawler } from '../controllers/post/createPostFromCrawler'
+import { getPostBySlug } from '../controllers/post/getPostBySlug'
 
 const postRoutes = Router()
 
 postRoutes.post('/internal/posts/from-crawler', createPostFromCrawler)
 postRoutes.get('/posts', getPosts)
+postRoutes.get('/post/slug/:slug', getPostBySlug);
 postRoutes.get('/post/:id', getPostById)
 postRoutes.post('/post', uploadCloud.fields([{ name: 'image', maxCount: 1 }]), createPost)
 postRoutes.put('/post/:id', uploadCloud.fields([{ name: 'image', maxCount: 1 }]), updatePost)
