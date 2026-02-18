@@ -39,7 +39,7 @@ export const createPostFromCrawler = async (req: Request, res: Response): Promis
     }
 
     /** 2. Chống trùng bài */
-    const slug = slugify(title, {
+    const slug = slugify(title.replace(/m2/gi, 'm-2').replace(/km2/gi, 'km-2').replace(/%/g, ' phan-tram ').replace(/\//g, ' '), {
       lower: true,
       strict: true,
       trim: true,
