@@ -22,6 +22,7 @@ import authRoutes from './api/routes/authRoutes'
 import postRoutes from './api/routes/postRoutes'
 import postCategoryRoutes from './api/routes/postCategoryRoutes'
 import crawlerRoutes from './api/routes/crawlerRoutes'
+import { setupSwagger } from './config/swagger'
 
 // Environment setup
 dotenv.config()
@@ -94,6 +95,8 @@ app.set('views', path.join(__dirname, 'views'))
 //   res.render('index', { endpointsByCategory })
 // })
 
+// Swagger
+setupSwagger(app)
 // Error handler middleware
 app.use(errorHandler)
 
