@@ -9,7 +9,6 @@ import bodyParser from 'body-parser'
 // Internal dependencies
 import connectDB from './config/db'
 import { errorHandler } from './middlewares/errorMiddleware'
-// import { endpointsByCategory } from './views/endpointsByCategory'
 
 // Routes
 // import authRoutes from './api/routes/auth/authRoutes'
@@ -89,11 +88,6 @@ app.use('/api/', crawlerRoutes)
 // EJS setup
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
-
-// Root route
-// app.get('/', (req, res) => {
-//   res.render('index', { endpointsByCategory })
-// })
 
 // Swagger
 setupSwagger(app)
