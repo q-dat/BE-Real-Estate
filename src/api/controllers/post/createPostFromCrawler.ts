@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import slugify from 'slugify'
 import { PostModel } from '~/api/models/post/postModel'
 import { PostCategoryModel } from '~/api/models/post/postCategoryModel'
+import { slugify } from '~/utils/slugify'
 
 export const createPostFromCrawler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -39,12 +39,7 @@ export const createPostFromCrawler = async (req: Request, res: Response): Promis
     }
 
     /** 2. Chống trùng bài */
-    const slug = slugify(title.replace(/m2/gi, 'm-2').replace(/km2/gi, 'km-2').replace(/%/g, ' phan-tram ').replace(/\//g, ' '), {
-      lower: true,
-      strict: true,
-      trim: true,
-      locale: 'vi'
-    })
+    const slug = slugify(title)
     const existed = await PostModel.exists({ slug })
 
     if (existed) {

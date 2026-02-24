@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { IPost, PostModel } from '~/api/models/post/postModel'
 import { uploadImageToCloudinary } from '~/common/uploadImageToCloudinary'
-import slugify from 'slugify'
+import { slugify } from '~/utils/slugify'
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,12 +17,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 
     const imageUrl = await uploadImageToCloudinary(avatarUrl.buffer)
 
-    const slug = slugify(title, {
-      lower: true,
-      strict: true,
-      trim: true,
-      locale: 'vi'
-    })
+    const slug = slugify(title)
 
     const existedSlug = await PostModel.exists({ slug })
     if (existedSlug) {

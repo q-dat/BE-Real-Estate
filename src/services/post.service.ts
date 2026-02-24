@@ -1,6 +1,6 @@
-import slugify from 'slugify'
 import { PostCategoryModel } from '~/api/models/post/postCategoryModel'
 import { PostModel } from '~/api/models/post/postModel'
+import { slugify } from '~/utils/slugify'
 
 interface CreateFromCrawlerInput {
   title: string
@@ -24,12 +24,7 @@ export class PostService {
     }
 
     /** Tạo slug cho bài viết */
-    const slug = slugify(input.title, {
-      lower: true,
-      strict: true,
-      trim: true,
-      locale: 'vi'
-    })
+    const slug = slugify(input.title)
 
     const existedSlug = await PostModel.exists({ slug })
     if (existedSlug) {

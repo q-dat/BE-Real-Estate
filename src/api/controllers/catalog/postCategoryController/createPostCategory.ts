@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import slugify from 'slugify'
 import { PostCategoryModel } from '~/api/models/post/postCategoryModel'
+import { slugify } from '~/utils/slugify'
 
 export const createPostCategory = async (req: Request, res: Response) => {
   try {
@@ -11,12 +11,7 @@ export const createPostCategory = async (req: Request, res: Response) => {
       return
     }
 
-    const slug = slugify(name, {
-      lower: true,
-      strict: true,
-      trim: true,
-      locale: 'vi'
-    })
+    const slug = slugify(name)
 
     const existedSlug = await PostCategoryModel.exists({ slug })
     if (existedSlug) {
