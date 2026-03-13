@@ -6,7 +6,7 @@ import { Request } from 'express'
 dotenv.config()
 
 cloudinary.config({
-  cloud_name: 'cloud7teck',
+  cloud_name: 'dfxlmtdpr',
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
