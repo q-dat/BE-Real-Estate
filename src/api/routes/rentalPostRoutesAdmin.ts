@@ -8,6 +8,7 @@ import { updateRentalPostAdmin } from '../controllers/items/rentalPostAdminContr
 import { requireAuth } from '~/middlewares/requireAuth'
 import { requireAdmin } from '~/middlewares/requireAdmin'
 import { getMyRentalPostsAdmin } from '../controllers/items/rentalPostAdminController/getMyRentalPostsAdmin'
+import { importRentalPosts } from '../controllers/items/rentalPostAdminController/importRentalPosts'
 
 const rentalPostAdminRoutes = express.Router()
 
@@ -200,5 +201,67 @@ rentalPostAdminRoutes.put('/rental-admin-post/:id', uploadFields, updateRentalPo
  *         description: Rental post deleted successfully
  */
 rentalPostAdminRoutes.delete('/rental-admin-post/:id', deleteRentalPostAdmin)
+/**
+ * @swagger
+ * /rental-admin-posts/import:
+ *   post:
+ *     summary: Bulk import rental posts via JSON (Admin)
+ *     tags: [RentalAdmin]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 categoryName:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 priceUnit:
+ *                   type: string
+ *                 area:
+ *                   type: number
+ *                 province:
+ *                   type: string
+ *                 district:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 author:
+ *                   type: string
+ *                 images:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 adminImages:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 postType:
+ *                   type: string
+ *                   enum: [basic, vip1, vip2, vip3, highlight]
+ *                 status:
+ *                   type: string
+ *                   enum: [active, pending, expired, hidden]
+ *     responses:
+ *       200:
+ *         description: Import completed
+ *       400:
+ *         description: Invalid input
+ */
+rentalPostAdminRoutes.post(
+  '/rental-admin-posts/import',
+  //  requireAuth, requireAdmin,
+  importRentalPosts
+)
 
 export default rentalPostAdminRoutes
