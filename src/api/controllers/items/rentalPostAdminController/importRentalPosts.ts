@@ -44,7 +44,7 @@ interface BulkImportRentalItem {
   postType: 'basic' | 'vip1' | 'vip2' | 'vip3' | 'highlight'
   status: 'active' | 'pending' | 'expired' | 'hidden'
 
-  author: string // ObjectId dạng string
+  author: string
 
   adminNote?: string
   adminImages?: string[]
