@@ -82,8 +82,9 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     /* Location */
+    const prefixRegex = /^(thành phố|thanh pho|tỉnh|tinh|tp\s*[\.\-]?)\s*/i
     if (province) {
-      filters.province = { $regex: String(province), $options: 'i' }
+      filters.province = { $regex: String(province).replace(prefixRegex, ''), $options: 'i' }
     }
 
     if (district) {
