@@ -15,9 +15,9 @@ export interface IRentalPostAdmin extends Document {
   priceUnit: string // VD: "Tỷ", "Triệu/m²", "/tháng", "/m²"...
   pricePerM2?: number // giá theo m2 (VNĐ/m2)
   area: number // diện tích (m2)
-  frontageWidth?: string // chiều ngang (mặt tiền)
-  lotDepth?: string // chiều sâu (chiều dài từ trước ra sau)
-  backSize?: string // mặt hậu
+  frontageWidth?: number // chiều ngang (mặt tiền)
+  lotDepth?: number // chiều sâu (chiều dài từ trước ra sau)
+  backSize?: number // mặt hậu
   floorNumber?: number // số tầng
   bedroomNumber?: number // số phòng ngủ
   toiletNumber?: number // số toilet
@@ -59,9 +59,9 @@ const RentalPostSchema: Schema = new Schema<IRentalPostAdmin>(
     pricePerM2: { type: Number, min: 0 },
 
     area: { type: Number, required: true, min: 0 },
-    frontageWidth: { type: String },
-    lotDepth: { type: String },
-    backSize: { type: String },
+    frontageWidth: { type: Number, min: 0, default: 0 },
+    lotDepth: { type: Number, min: 0, default: 0 },
+    backSize: { type: Number, min: 0, default: 0 },
     floorNumber: { type: Number, min: 0 },
     bedroomNumber: { type: Number, min: 0 },
     toiletNumber: { type: Number, min: 0 },
