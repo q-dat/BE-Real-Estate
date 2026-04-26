@@ -19,9 +19,9 @@ interface BulkImportRentalItem {
   pricePerM2?: number
 
   area: number
-  frontageWidth?: string
-  lotDepth?: string
-  backSize?: string
+  frontageWidth?: number
+  lotDepth?: number
+  backSize?: number
 
   floorNumber?: number
   bedroomNumber?: number
