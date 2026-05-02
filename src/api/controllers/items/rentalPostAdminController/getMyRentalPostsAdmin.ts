@@ -120,7 +120,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
     if (categoryCode) {
       categoryMatch['category.categoryCode'] = Number(categoryCode)
     }
-    
+
     const matchStage: Record<string, unknown> = {
       ...filters,
       ...(Object.keys(categoryMatch).length > 0 ? categoryMatch : {})
@@ -137,6 +137,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       },
       { $unwind: '$category' },
       { $match: matchStage },
+      // Sort by newest
       { $sort: { createdAt: -1 } }
     ])
 

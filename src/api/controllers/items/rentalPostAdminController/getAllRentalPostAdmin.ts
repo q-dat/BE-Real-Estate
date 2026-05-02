@@ -45,7 +45,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
 
     const filters: Record<string, unknown> = {}
 
-    /* Text search */
+    // Text search
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
@@ -53,7 +53,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.code = { $regex: String(code), $options: 'i' }
     }
 
-    /* Price */
+    // Price
     if (priceFrom || priceTo) {
       filters.price = {
         ...(priceFrom && { $gte: Number(priceFrom) }),
@@ -63,7 +63,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.price = { $lte: Number(price) }
     }
 
-    /* Area */
+    // Area
     if (areaFrom || areaTo) {
       filters.area = {
         ...(areaFrom && { $gte: Number(areaFrom) }),
@@ -73,12 +73,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.area = { $gte: Number(area) }
     }
 
-    /* Dimensions */
+    // Dimensions
     if (frontageWidth) filters.frontageWidth = frontageWidth
     if (lotDepth) filters.lotDepth = lotDepth
     if (backSize) filters.backSize = backSize
 
-    /* Price per m2 */
+    // Price per m2
     if (pricePerM2From || pricePerM2To) {
       filters.pricePerM2 = {
         ...(pricePerM2From && { $gte: Number(pricePerM2From) }),
@@ -86,7 +86,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       }
     }
 
-    /* Location */
+    // Location
     if (province) {
       filters.province = { $regex: String(province), $options: 'i' }
     }
@@ -102,7 +102,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       filters.ward = { $regex: String(ward), $options: 'i' }
     }
 
-    /* Property attributes */
+    // Property attributes
     if (propertyType) filters.propertyType = propertyType
     if (locationType) filters.locationType = locationType
     if (direction) filters.direction = direction
@@ -113,12 +113,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     if (toiletNumber) filters.toiletNumber = Number(toiletNumber)
     if (floorNumber) filters.floorNumber = Number(floorNumber)
 
-    /* Post meta */
+    // Post meta
     if (postType) filters.postType = postType
     if (status) filters.status = status
     if (author) filters.author = author
 
-    /* Category match */
+    // Category match
     const categoryMatch: Record<string, unknown> = {}
 
     if (catalogID) {
@@ -130,7 +130,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     const rentalPosts = await RentalPostAdminModel.aggregate([
-      /* CATEGORY */
+      // CATEGORY
       {
         $lookup: {
           from: 'rental-categories',
@@ -141,7 +141,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       },
       { $unwind: '$category' },
 
-      /* AUTHOR */
+      // AUTHOR
       {
         $lookup: {
           from: 'users',
@@ -157,11 +157,14 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
         }
       },
 
-      /* FILTER */
+      // FILTER
       { $match: categoryMatch },
       { $match: filters },
 
-      /* CLEAN OUTPUT */
+      // Sort by newest
+      { $sort: { createdAt: -1 } },
+
+      // CLEAN OUTPUT
       {
         $project: {
           'author.password': 0,
