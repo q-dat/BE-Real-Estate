@@ -2,6 +2,7 @@ import { Response } from 'express'
 import mongoose from 'mongoose'
 import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
 import { AuthRequest } from '~/middlewares/requireAuth'
+import { buildPaginationMeta, getPagination } from '~/utils/pagination'
 
 export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -42,15 +43,21 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       author
     } = req.query
 
+    const { page, limit, skip } = getPagination(req.query, {
+      defaultPage: 1,
+      defaultLimit: 20,
+      maxLimit: 100
+    })
+
     const filters: Record<string, unknown> = {
       author: new mongoose.Types.ObjectId(adminId)
     }
-    /* ---------- Text search ---------- */
+    // Text search
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
 
-    /* ---------- Price ---------- */
+    // Price
     if (priceFrom || priceTo) {
       filters.price = {
         ...(priceFrom && { $gte: Number(priceFrom) }),
@@ -60,7 +67,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       filters.price = { $lte: Number(price) }
     }
 
-    /* ---------- Area ---------- */
+    // Area
     if (areaFrom || areaTo) {
       filters.area = {
         ...(areaFrom && { $gte: Number(areaFrom) }),
@@ -70,7 +77,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       filters.area = { $gte: Number(area) }
     }
 
-    /* ---------- Price per m2 ---------- */
+    // Price per m2
     if (pricePerM2From || pricePerM2To) {
       filters.pricePerM2 = {
         ...(pricePerM2From && { $gte: Number(pricePerM2From) }),
@@ -78,7 +85,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       }
     }
 
-    /* ---------- Location ---------- */
+    // Location
     if (province) {
       filters.province = { $regex: String(province), $options: 'i' }
     }
@@ -94,7 +101,7 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       filters.ward = { $regex: String(ward), $options: 'i' }
     }
 
-    /* ---------- Property attributes ---------- */
+    // Property attributes
     if (propertyType) filters.propertyType = propertyType
     if (locationType) filters.locationType = locationType
     if (direction) filters.direction = direction
@@ -105,12 +112,15 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
     if (toiletNumber) filters.toiletNumber = Number(toiletNumber)
     if (floorNumber) filters.floorNumber = Number(floorNumber)
 
-    /* ---------- Post meta ---------- */
+    // Post meta
     if (postType) filters.postType = postType
     if (status) filters.status = status
-    if (author) filters.author = author
 
-    /* ---------- Category match ---------- */
+    if (author) {
+      filters.author = new mongoose.Types.ObjectId(String(author))
+    }
+
+    // Category match
     const categoryMatch: Record<string, unknown> = {}
 
     if (catalogID) {
@@ -123,10 +133,10 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
 
     const matchStage: Record<string, unknown> = {
       ...filters,
-      ...(Object.keys(categoryMatch).length > 0 ? categoryMatch : {})
+      ...categoryMatch
     }
 
-    const rentalPosts = await RentalPostAdminModel.aggregate([
+    const result = await RentalPostAdminModel.aggregate([
       {
         $lookup: {
           from: 'rental-categories',
@@ -138,18 +148,34 @@ export const getMyRentalPostsAdmin = async (req: AuthRequest, res: Response): Pr
       { $unwind: '$category' },
       { $match: matchStage },
       // Sort by newest
-      { $sort: { createdAt: -1 } }
+
+      { $sort: { createdAt: -1 } },
+      // PAGINATION + TOTAL COUNT
+      {
+        $facet: {
+          data: [{ $skip: skip }, { $limit: limit }],
+          totalData: [{ $count: 'total' }]
+        }
+      }
     ])
 
-    const count = await RentalPostAdminModel.countDocuments(filters)
+    const rentalPosts = result[0]?.data ?? []
+    const total = result[0]?.totalData?.[0]?.total ?? 0
 
     res.status(200).json({
-      message: 'Lấy danh sách bài đăng của admin thành công',
-      count,
+      message: rentalPosts.length ? 'Lấy danh sách bài đăng của admin thành công' : 'Không có bài đăng phù hợp',
+      count: total,
+      visibleCount: rentalPosts.length,
+      pagination: buildPaginationMeta({
+        page,
+        limit,
+        total
+      }),
       rentalPosts
     })
   } catch (error: unknown) {
     const err = error as Error
+
     res.status(500).json({
       message: 'Lỗi máy chủ',
       error: err.message

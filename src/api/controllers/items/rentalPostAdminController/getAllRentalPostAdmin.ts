@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import RentalPostAdminModel from '~/api/models/rental/rentalPostAdminModel'
+import { buildPaginationMeta, getPagination } from '~/utils/pagination'
 
 export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -43,12 +44,19 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       author
     } = req.query
 
+    const { page, limit, skip } = getPagination(req.query, {
+      defaultPage: 1,
+      defaultLimit: 20,
+      maxLimit: 100
+    })
+
     const filters: Record<string, unknown> = {}
 
     // Text search
     if (title) {
       filters.title = { $regex: String(title), $options: 'i' }
     }
+
     if (code) {
       filters.code = { $regex: String(code), $options: 'i' }
     }
@@ -74,9 +82,9 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     }
 
     // Dimensions
-    if (frontageWidth) filters.frontageWidth = frontageWidth
-    if (lotDepth) filters.lotDepth = lotDepth
-    if (backSize) filters.backSize = backSize
+    if (frontageWidth) filters.frontageWidth = Number(frontageWidth)
+    if (lotDepth) filters.lotDepth = Number(lotDepth)
+    if (backSize) filters.backSize = Number(backSize)
 
     // Price per m2
     if (pricePerM2From || pricePerM2To) {
@@ -93,6 +101,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
 
     if (district) {
       const normalizedDistrict = String(district).trim().toLowerCase()
+
       filters.$expr = {
         $eq: [{ $toLower: '$district' }, normalizedDistrict]
       }
@@ -116,12 +125,15 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
     // Post meta
     if (postType) filters.postType = postType
     if (status) filters.status = status
-    if (author) filters.author = author
+
+    if (author && mongoose.Types.ObjectId.isValid(String(author))) {
+      filters.author = new mongoose.Types.ObjectId(String(author))
+    }
 
     // Category match
     const categoryMatch: Record<string, unknown> = {}
 
-    if (catalogID) {
+    if (catalogID && mongoose.Types.ObjectId.isValid(String(catalogID))) {
       categoryMatch['category._id'] = new mongoose.Types.ObjectId(String(catalogID))
     }
 
@@ -129,7 +141,7 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       categoryMatch['category.categoryCode'] = Number(categoryCode)
     }
 
-    const rentalPosts = await RentalPostAdminModel.aggregate([
+    const result = await RentalPostAdminModel.aggregate([
       // CATEGORY
       {
         $lookup: {
@@ -158,8 +170,12 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
       },
 
       // FILTER
-      { $match: categoryMatch },
-      { $match: filters },
+      {
+        $match: {
+          ...filters,
+          ...categoryMatch
+        }
+      },
 
       // Sort by newest
       { $sort: { createdAt: -1 } },
@@ -181,21 +197,37 @@ export const getAllRentalPostsAdmin = async (req: Request, res: Response): Promi
           'author.failedLoginAttempts': 0,
           __v: 0
         }
+      },
+
+      // PAGINATION + TOTAL COUNT
+      {
+        $facet: {
+          data: [{ $skip: skip }, { $limit: limit }],
+          totalData: [{ $count: 'total' }]
+        }
       }
     ])
 
-    const count = await RentalPostAdminModel.countDocuments(filters)
+    const rentalPosts = result[0]?.data ?? []
+    const total = result[0]?.totalData?.[0]?.total ?? 0
 
     res.status(200).json({
       message: rentalPosts.length ? 'Lấy danh sách bài đăng thành công' : 'Không có bài đăng phù hợp',
-      count,
+      count: total,
       visibleCount: rentalPosts.length,
+      pagination: buildPaginationMeta({
+        page,
+        limit,
+        total
+      }),
       rentalPosts
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as Error
+
     res.status(500).json({
       message: 'Lỗi máy chủ',
-      error: error.message
+      error: err.message
     })
   }
 }
